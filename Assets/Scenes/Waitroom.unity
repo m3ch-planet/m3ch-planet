@@ -440,7 +440,7 @@ GameObject:
   - component: {fileID: 515725707}
   - component: {fileID: 515725706}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ToogleReady
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -825,8 +825,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1290,6 +1290,9 @@ GameObject:
   - component: {fileID: 1453032045}
   - component: {fileID: 1453032044}
   - component: {fileID: 1453032043}
+  - component: {fileID: 1453032046}
+  - component: {fileID: 1453032047}
+  - component: {fileID: 1453032048}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
@@ -1337,6 +1340,46 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1453032046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453032042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc37caf955e17aa49a111a150c48ce64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WaitRoomPanel: {fileID: 1857938050}
+--- !u!114 &1453032047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453032042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeceee8c2f5ea5647aae0cd8334ad54e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlanetPrefab: {fileID: 127511594845128344, guid: e037220668bbad144a7c2048caf4f22f,
+    type: 3}
+  GroundImageTarget: {fileID: 1087188409}
+--- !u!114 &1453032048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453032042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 174142af8aa726e479ca6e6eceb191d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!21 &1546588680
 Material:
   serializedVersion: 6
@@ -1429,7 +1472,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.7971698, g: 1, b: 0.98297894, a: 1}
+  m_BackGroundColor: {r: 0.18066926, g: 0.26415092, b: 0.25772923, a: 1}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -1553,7 +1596,7 @@ GameObject:
   - component: {fileID: 1857938053}
   - component: {fileID: 1857938052}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: WaitRoomPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1976,7 +2019,8 @@ MonoBehaviour:
   m_PlayerSpawnMethod: 1
   m_OfflineScene: 
   m_OnlineScene: 
-  m_SpawnPrefabs: []
+  m_SpawnPrefabs:
+  - {fileID: 127511594845128344, guid: e037220668bbad144a7c2048caf4f22f, type: 3}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:

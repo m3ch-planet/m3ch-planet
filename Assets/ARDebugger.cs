@@ -19,7 +19,7 @@ public class ARDebugger : MonoBehaviour
 
     private void Update()
     {
-        log.text = "Hello";
+        log.text = "";
         if (UnityEngine.Time.time > t)
         {
             persistLog.text = "";

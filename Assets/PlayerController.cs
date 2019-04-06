@@ -21,8 +21,13 @@ public class PlayerController : NetworkBehaviour
     private bool _ready; //whether the Game server can start the game
     private bool prevReady;
 
+    //Turn Variables
+    bool MyTurn; //true if is current player's turn
+
+
     //Other Game variables
     GameController GC;
+    AssetManager AM;
 
     //Debug Variables
     Renderer[] Renderers;
@@ -39,7 +44,9 @@ public class PlayerController : NetworkBehaviour
     {
         GC = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         d = GC.GetComponent<ARDebugger>();
+        AM = GC.GetComponent<AssetManager>();
         prevReady = false;
+        MyTurn = false;
     }
 
     public void TakeDamage(int _amt)
@@ -52,9 +59,12 @@ public class PlayerController : NetworkBehaviour
         CheckReady();
     }
 
-    public void SetReady(bool ready)
+    [Command]
+    public void CmdSetReady(bool ready)
     {
         _ready = ready;
+        if (GC.AreAllPlayersReady())
+            CmdStartGame();
     }
 
     public bool GetReady()
@@ -74,5 +84,28 @@ public class PlayerController : NetworkBehaviour
             }
             prevReady = _ready;
         }
+    }
+
+    public void SetMyTurn(bool turn)
+    {
+        MyTurn = turn;
+    }
+
+    //Tells server to start game
+    [Command]
+    private void CmdStartGame()
+    {
+        GameObject Planet = Instantiate(AM.Get("Planet"));
+        NetworkServer.Spawn(Planet);
+        Planet.gameObject.name = "Planet " + Planet.GetComponent<NetworkIdentity>().netId.ToString();
+        RpcStartGame(Planet);
+    }
+
+    //Tells every client to start game
+    [ClientRpc]
+    private void RpcStartGame(GameObject Planet)
+    {
+        Planet.transform.parent = AM.Get("GroundImageTarget").transform;
+        GC.StartGame();
     }
 }
