@@ -10,11 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8999000149299138896}
   - component: {fileID: 4056822151587254484}
-  - component: {fileID: 4990355529943830175}
-  - component: {fileID: 6686414605179722627}
-  - component: {fileID: 7592952720707359727}
-  - component: {fileID: 5201129855289667889}
   - component: {fileID: 3957781575845674626}
+  - component: {fileID: 4990355529943830175}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -70,74 +67,6 @@ MonoBehaviour:
     i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
---- !u!114 &4990355529943830175
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5300571177741287233}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32f23e48a795a264ea24ae81f5d429da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  componentsToDisable:
-  - {fileID: 5201129855289667889}
---- !u!114 &6686414605179722627
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5300571177741287233}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_TransformSyncMode: 1
-  m_SendInterval: 0.1
-  m_SyncRotationAxis: 7
-  m_RotationSyncCompression: 0
-  m_SyncSpin: 0
-  m_MovementTheshold: 0.001
-  m_VelocityThreshold: 0.0001
-  m_SnapThreshold: 5
-  m_InterpolateRotation: 10
-  m_InterpolateMovement: 4.4
---- !u!114 &7592952720707359727
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5300571177741287233}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1267208747, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Target: {fileID: 5868451365071889027}
-  m_ChildIndex: 0
-  m_SendInterval: 0.1
-  m_SyncRotationAxis: 0
-  m_RotationSyncCompression: 0
-  m_MovementThreshold: 0.001
-  m_InterpolateRotation: 1
-  m_InterpolateMovement: 1
---- !u!114 &5201129855289667889
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5300571177741287233}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bef8e56c12fd67040a7cd7a8e4463f79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3957781575845674626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,6 +79,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3c993cf8c5fe244cb85ef5778f5f0a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4990355529943830175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5300571177741287233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32f23e48a795a264ea24ae81f5d429da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  componentsToDisable: []
 --- !u!1 &8538754662175561062
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,6 +104,7 @@ GameObject:
   - component: {fileID: 6382642254506995393}
   - component: {fileID: 5090464806853075752}
   - component: {fileID: 8932347135585383421}
+  - component: {fileID: 4406875223545399576}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -241,3 +184,19 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &4406875223545399576
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8538754662175561062}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

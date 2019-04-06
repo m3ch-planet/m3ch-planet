@@ -9,15 +9,28 @@ public class PlayerNetworkSetup : NetworkBehaviour
     [SerializeField]
     Behaviour[] componentsToDisable;
 
+    GameController GC;
+    ARDebugger d;
+
     // Start is called before the first frame update
     void Start()
     {
+        GC = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        d = GC.GetComponent<ARDebugger>();
+
         if (!isLocalPlayer)
         {
             for(int i = 0; i < componentsToDisable.Length; i++)
             {
                 componentsToDisable[i].enabled = false;
             }
+            GetComponent<PlayerController>()._isLocalPlayer = false;
+            d.LogPersist("Player " + GetComponent<NetworkIdentity>().netId.ToString() + " joined");
+        }
+        else
+        {
+            GetComponent<PlayerController>()._isLocalPlayer = true;
+            d.LogPersist("Player " + GetComponent<NetworkIdentity>().netId.ToString() + " created");
         }
     }
 
