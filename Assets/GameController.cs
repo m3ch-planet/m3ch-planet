@@ -104,4 +104,11 @@ public class GameController : MonoBehaviour
     {
         LocalPlayer = NewLocalPlayer;
     }
+
+    //Called by server to find the correct player, change that player's name
+    //PlayerName is SyncVar, so is updated on all clients
+    public void InitPlayerName(string name,string _playerID)
+    {
+        GetPlayer(PLAYER_ID_PREFIX + _playerID).InitPlayerName(name);
+    }
 }

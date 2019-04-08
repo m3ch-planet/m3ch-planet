@@ -29,8 +29,10 @@ public class PlayerNetworkSetup : NetworkBehaviour
         }
         else
         {
+            string _playerID = GetComponent<NetworkIdentity>().netId.ToString();
             GetComponent<PlayerController>()._isLocalPlayer = true;
-            d.LogPersist("Player " + GetComponent<NetworkIdentity>().netId.ToString() + " created");
+            CmdInitPlayerName(PlayerPrefs.GetString("PlayerName"), _playerID);
+            d.LogPersist("Player " + _playerID + " created");
         }
     }
 
@@ -45,5 +47,12 @@ public class PlayerNetworkSetup : NetworkBehaviour
     private void OnDisable()
     {
         GameController.UnRegisterPlayer(transform.name);
+    }
+
+    [Command]
+    private void CmdInitPlayerName(string name,string _PlayerID)
+    {
+        Debug.Log("Command Initing Player Name: " + name);
+        GC.InitPlayerName(name, _PlayerID);
     }
 }
