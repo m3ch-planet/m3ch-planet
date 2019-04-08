@@ -5,8 +5,6 @@ using UnityEngine.Networking;
 
 public class PlayerController : NetworkBehaviour
 {
-    
-
     //Warfare variables
     int maxHealth = 100;
     int maxEnergy = 100;
@@ -24,6 +22,8 @@ public class PlayerController : NetworkBehaviour
     //Turn Variables
     bool MyTurn; //true if is current player's turn
 
+    //PlayerVariables
+    string PlayerName;
 
     //Other Game variables
     GameController GC;
@@ -47,6 +47,8 @@ public class PlayerController : NetworkBehaviour
         AM = GC.GetComponent<AssetManager>();
         prevReady = false;
         MyTurn = false;
+        PlayerName = PlayerPrefs.GetString("PlayerName");
+        if (PlayerName == "") PlayerName = "Bob";
     }
 
     public void TakeDamage(int _amt)
