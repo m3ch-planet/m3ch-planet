@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using TMPro;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -23,6 +24,7 @@ public class PlayerController : NetworkBehaviour
     bool MyTurn; //true if is current player's turn
 
     //PlayerVariables
+    [SyncVar]
     string PlayerName;
 
     //Other Game variables
@@ -32,6 +34,10 @@ public class PlayerController : NetworkBehaviour
     //Debug Variables
     Renderer[] Renderers;
     ARDebugger d;
+
+    //PlayerUI
+    public GameObject PlayerNameText;
+    GameObject PlayerUICanvas;
     
     private void Awake()
     {
@@ -47,8 +53,15 @@ public class PlayerController : NetworkBehaviour
         AM = GC.GetComponent<AssetManager>();
         prevReady = false;
         MyTurn = false;
-        PlayerName = PlayerPrefs.GetString("PlayerName");
-        if (PlayerName == "") PlayerName = "Bob";
+        PlayerUICanvas = PlayerNameText.transform.parent.gameObject;
+        PlayerUICanvas.GetComponent<Canvas>().worldCamera = Camera.main;
+    }
+
+    public void InitPlayerName(string name)
+    {
+        if (name == "") PlayerName = "Bob";
+        else PlayerName = name;
+        PlayerNameText.GetComponent<TextMeshProUGUI>().text = PlayerName;
     }
 
     public void TakeDamage(int _amt)
@@ -59,6 +72,8 @@ public class PlayerController : NetworkBehaviour
     public void Update()
     {
         CheckReady();
+        PlayerUICanvas.transform.LookAt(Camera.main.transform);
+        PlayerNameText.GetComponent<TextMeshProUGUI>().text = PlayerName;
     }
 
     [Command]
