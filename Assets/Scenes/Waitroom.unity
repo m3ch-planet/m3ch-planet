@@ -1365,7 +1365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeceee8c2f5ea5647aae0cd8334ad54e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlanetPrefab: {fileID: 127511594845128344, guid: e037220668bbad144a7c2048caf4f22f,
+  PlanetPrefab: {fileID: 826295454717296812, guid: 8970c9bf4a53508498f2b0f52393ab9b,
     type: 3}
   GroundImageTarget: {fileID: 1087188409}
 --- !u!114 &1453032048
