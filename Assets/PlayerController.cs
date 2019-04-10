@@ -33,7 +33,6 @@ public class PlayerController : NetworkBehaviour
     AssetManager AM;
 
     //Debug Variables
-    Renderer[] Renderers;
     ARDebugger d;
 
     //PlayerUI
@@ -43,12 +42,12 @@ public class PlayerController : NetworkBehaviour
     public GameObject EnergyBar;
     Slider HealthBarSlider;
     Slider EnergyBarSlider;
+    public TextMeshProUGUI ReadyText;
     
     private void Awake()
     {
         currentHealth = maxHealth;
         currentEnergy = 0;
-        Renderers = gameObject.GetComponentsInChildren<Renderer>();
         //Init Player UI variables
         HealthBarSlider = HealthBar.GetComponent<Slider>();
         EnergyBarSlider = EnergyBar.GetComponent<Slider>();
@@ -79,9 +78,17 @@ public class PlayerController : NetworkBehaviour
 
     public void Update()
     {
-        CheckReady();
+        if (GC.GetGameHappening())
+        {
+
+        }
+        else
+        {
+            CheckReady();
+            PlayerNameText.GetComponent<TextMeshProUGUI>().text = PlayerName;
+        }
+
         PlayerUICanvas.transform.LookAt(Camera.main.transform);
-        PlayerNameText.GetComponent<TextMeshProUGUI>().text = PlayerName;
         HealthBarSlider.value = (float)currentHealth / 100;
         EnergyBarSlider.value = (float)currentEnergy / 100;
     }
@@ -101,14 +108,11 @@ public class PlayerController : NetworkBehaviour
 
     void CheckReady()
     {
-        d.Log(gameObject.name + " is " + _ready + " and " + prevReady);
         if (_ready != prevReady)
         {
             //User just updated ready
-            foreach (Renderer r in Renderers)
-            {
-                r.material.color = _ready ? Color.red : Color.white;
-            }
+            ReadyText.text = _ready ? "Ready" : "Not Ready";
+            ReadyText.color = _ready ? Color.green : Color.red;
             prevReady = _ready;
         }
     }

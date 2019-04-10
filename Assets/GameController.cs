@@ -57,18 +57,21 @@ public class GameController : MonoBehaviour
     }
 
     public void ToggleReady()
-    { 
-        if (LocalPlayer == null)
+    {
+        if (!GameHappening)
         {
-            foreach(PlayerController p in PlayersList)
+            if (LocalPlayer == null)
             {
-                if (p._isLocalPlayer)
+                foreach (PlayerController p in PlayersList)
                 {
-                    LocalPlayer = p;
+                    if (p._isLocalPlayer)
+                    {
+                        LocalPlayer = p;
+                    }
                 }
             }
+            LocalPlayer.CmdSetReady(!LocalPlayer.GetReady());
         }
-        LocalPlayer.CmdSetReady(!LocalPlayer.GetReady());
     }
 
     public bool AreAllPlayersReady()
@@ -97,11 +100,6 @@ public class GameController : MonoBehaviour
     public bool GetGameHappening()
     {
         return GameHappening;
-    }
-
-    public void SetLocalPlayer(PlayerController NewLocalPlayer)
-    {
-        LocalPlayer = NewLocalPlayer;
     }
 
     //Called by server to find the correct player, change that player's name
