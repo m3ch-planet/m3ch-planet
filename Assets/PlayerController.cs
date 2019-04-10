@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -38,12 +39,19 @@ public class PlayerController : NetworkBehaviour
     //PlayerUI
     public GameObject PlayerNameText;
     GameObject PlayerUICanvas;
+    public GameObject HealthBar;
+    public GameObject EnergyBar;
+    Slider HealthBarSlider;
+    Slider EnergyBarSlider;
     
     private void Awake()
     {
         currentHealth = maxHealth;
         currentEnergy = 0;
         Renderers = gameObject.GetComponentsInChildren<Renderer>();
+        //Init Player UI variables
+        HealthBarSlider = HealthBar.GetComponent<Slider>();
+        EnergyBarSlider = EnergyBar.GetComponent<Slider>();
     }
 
     private void Start()
@@ -74,6 +82,8 @@ public class PlayerController : NetworkBehaviour
         CheckReady();
         PlayerUICanvas.transform.LookAt(Camera.main.transform);
         PlayerNameText.GetComponent<TextMeshProUGUI>().text = PlayerName;
+        HealthBarSlider.value = (float)currentHealth / 100;
+        EnergyBarSlider.value = (float)currentEnergy / 100;
     }
 
     [Command]

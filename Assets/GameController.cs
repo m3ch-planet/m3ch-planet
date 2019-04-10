@@ -12,7 +12,6 @@ public class GameController : MonoBehaviour
 
     //Other Game Variables
     UIController UI;
-    AssetManager AM;
     ARDebugger d;
     private static bool GameHappening; //if GameIsHappening, then no new players can join
 
@@ -20,7 +19,6 @@ public class GameController : MonoBehaviour
     void Start()
     {
         UI = GetComponent<UIController>();
-        AM = GetComponent<AssetManager>();
         d = GetComponent<ARDebugger>();
         GameHappening = false;
         LocalPlayer = null;
@@ -45,6 +43,7 @@ public class GameController : MonoBehaviour
             Players.Add(_playerId, _player);
             PlayersList.AddLast(_player);
             _player.transform.name = _playerId;
+            _player.gameObject.transform.parent = AssetManager.Instance.Get("GroundImageTarget").transform;
             return;
         }
         Debug.LogError("Game is Happening. Player Can't Join!");
