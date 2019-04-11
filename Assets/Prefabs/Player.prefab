@@ -566,8 +566,6 @@ GameObject:
   - component: {fileID: 4056822151587254484}
   - component: {fileID: 3957781575845674626}
   - component: {fileID: 4990355529943830175}
-  - component: {fileID: 4964255828452149771}
-  - component: {fileID: 8445492482132829727}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -653,48 +651,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   componentsToDisable: []
---- !u!114 &4964255828452149771
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5300571177741287233}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_TransformSyncMode: 1
-  m_SendInterval: 0.1
-  m_SyncRotationAxis: 7
-  m_RotationSyncCompression: 0
-  m_SyncSpin: 0
-  m_MovementTheshold: 0.001
-  m_VelocityThreshold: 0.0001
-  m_SnapThreshold: 5
-  m_InterpolateRotation: 1
-  m_InterpolateMovement: 5
---- !u!114 &8445492482132829727
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5300571177741287233}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1267208747, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Target: {fileID: 7755087063510158476}
-  m_ChildIndex: 0
-  m_SendInterval: 0.1
-  m_SyncRotationAxis: 7
-  m_RotationSyncCompression: 0
-  m_MovementThreshold: 0.001
-  m_InterpolateRotation: 1
-  m_InterpolateMovement: 1
 --- !u!1 &5576941538249989406
 GameObject:
   m_ObjectHideFlags: 0
@@ -1257,8 +1213,8 @@ Rigidbody:
   m_GameObject: {fileID: 7751772303681899720}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0.7
-  m_AngularDrag: 0.7
+  m_Drag: 0
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0

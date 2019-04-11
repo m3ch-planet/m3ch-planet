@@ -8,13 +8,21 @@ public class PlanetGravity : MonoBehaviour
     GameController GC;
     TurnController TC;
     Rigidbody[] RB;
+    ARDebugger d;
+
+
+    //Player Book Keeping
     PlayerController[] PCs;
+    bool init;
 
     // Start is called before the first frame update
     void Start()
     {
+        init = false;
         GC = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
-        TC = GC.GetComponent<TurnController>();
+        d = GC.gameObject.GetComponent<ARDebugger>();
+        TC = GC.gameObject.GetComponent<TurnController>();
+        d.LogPersist("Got TC " + TC.name);
     }
 
     public void Init(int InitSeed)
@@ -24,6 +32,8 @@ public class PlanetGravity : MonoBehaviour
         for (int i = 0; i < PCs.Length; i++)
         {
             RB[i] = PCs[i].transform.GetChild(0).gameObject.GetComponent<Rigidbody>();
+            RB[i].useGravity = false;
+            PCs[i].SetReadyText(false);
         }
         Random.seed = InitSeed;
         foreach (PlayerController Player in PCs)
@@ -31,9 +41,9 @@ public class PlanetGravity : MonoBehaviour
             Player.transform.parent = transform;
             //Randomly place the player somewhere
             Player.transform.position = new Vector3(
-                Random.Range(4f, 10f),
-                Random.Range(4f, 10f),
-                Random.Range(4f, 10f));
+                Random.Range(-10f, 10f),
+                Random.Range(-10f, 10f),
+                Random.Range(-10f, 10f));
             //Place the player on the surface of the planet
             Vector3 n = Player.transform.position - transform.position;
             n = n.normalized * (transform.localScale.x + 0.8f);
@@ -48,21 +58,30 @@ public class PlanetGravity : MonoBehaviour
                 1<<9) //only detect objects in layer 9 (Planet)
                 )
             {
-                print(hit.transform.position);
                 Player.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
             }
         }
+        init = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //TODO handle when a player disconnects or leaves the room
-        foreach(Rigidbody rb in RB)
+        if (!init && TC.GetPlayers().Length > 0)
         {
-            Vector3 force = transform.position - rb.transform.position;
-            force = force.normalized * 3f;
-            rb.AddForce(force);
+            Init(5);
         }
+        //TODO handle when a player disconnects or leaves the room
+        if (RB != null && RB.Length > 0)
+        {
+            d.Log("Planet Gravity " + RB.Length);
+            foreach (Rigidbody rb in RB)
+            {
+                Vector3 force = transform.position - rb.transform.position;
+                force = force.normalized * 3f;
+                rb.AddForce(force);
+            }
+        }
+        else d.Log("No Rigidbodies");
     }
 }

@@ -27,7 +27,8 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (GameHappening) d.Log("GC Game Happening");
+        else d.Log("GC Game Not Happening");
     }
 
     public static PlayerController GetPlayer(string _ID)
@@ -85,12 +86,18 @@ public class GameController : MonoBehaviour
         }
         return allPlayersReady;
     }
-    
-    public void StartGame()
+
+    //Called from PlayerController RpcStartGame
+    //Since there is only one instance of GC
+    //When localPlayer calls GC, it affects 
+    //all clients games
+    public void StartGame(GameObject Planet)
     {
+        d.LogPersist("GC Start Game");
         UI.SetWaitRoomPanel(false);
         GameHappening = true;
         GetComponent<TurnController>().InitPlayers(PlayersList);
+        d.LogPersist("GC Done Init Players");
     }
 
     void StopGame()

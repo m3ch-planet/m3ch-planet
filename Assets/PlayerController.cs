@@ -96,10 +96,11 @@ public class PlayerController : NetworkBehaviour
     }
 
     [Command]
+    //Player on Server is set to ready
+    //_ready is SyncVar so syncs to all clients
     public void CmdSetReady(bool ready)
     {
         _ready = ready;
-        d.LogPersist(gameObject.name + " is " + ready);
         if (GC.AreAllPlayersReady())
             CmdStartGame();
     }
@@ -129,6 +130,7 @@ public class PlayerController : NetworkBehaviour
     [Command]
     private void CmdStartGame()
     {
+        d.LogPersist("Cmd Start Game");
         GameObject Planet = Instantiate(AM.Get("Planet"));
         NetworkServer.Spawn(Planet);
         Planet.gameObject.name = "Planet " + Planet.GetComponent<NetworkIdentity>().netId.ToString();
@@ -139,10 +141,13 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     private void RpcStartGame(GameObject Planet)
     {
+        d.LogPersist("Rpc Start Game");
         Planet.transform.parent = AssetManager.Instance.Get("GroundImageTarget").transform;
-        ReadyText.gameObject.SetActive(false);
-        PlayerMesh.GetComponent<Rigidbody>().useGravity = false;
-        GC.StartGame();
-        Planet.GetComponent<PlanetGravity>().Init(4);
+        GC.StartGame(Planet);
+    }
+
+    public void SetReadyText(bool active)
+    {
+        ReadyText.gameObject.SetActive(active);
     }
 }
