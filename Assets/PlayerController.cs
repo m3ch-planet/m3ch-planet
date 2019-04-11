@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -26,24 +27,31 @@ public class PlayerController : NetworkBehaviour
     //PlayerVariables
     [SyncVar]
     string PlayerName;
+    GameObject PlayerMesh;
 
     //Other Game variables
     GameController GC;
     AssetManager AM;
 
     //Debug Variables
-    Renderer[] Renderers;
     ARDebugger d;
 
     //PlayerUI
     public GameObject PlayerNameText;
     GameObject PlayerUICanvas;
+    public GameObject HealthBar;
+    public GameObject EnergyBar;
+    Slider HealthBarSlider;
+    Slider EnergyBarSlider;
+    public TextMeshProUGUI ReadyText;
     
     private void Awake()
     {
         currentHealth = maxHealth;
         currentEnergy = 0;
-        Renderers = gameObject.GetComponentsInChildren<Renderer>();
+        //Init Player UI variables
+        HealthBarSlider = HealthBar.GetComponent<Slider>();
+        EnergyBarSlider = EnergyBar.GetComponent<Slider>();
     }
 
     private void Start()
@@ -55,6 +63,7 @@ public class PlayerController : NetworkBehaviour
         MyTurn = false;
         PlayerUICanvas = PlayerNameText.transform.parent.gameObject;
         PlayerUICanvas.GetComponent<Canvas>().worldCamera = Camera.main;
+        PlayerMesh = transform.GetChild(0).gameObject;
     }
 
     public void InitPlayerName(string name)
@@ -71,12 +80,24 @@ public class PlayerController : NetworkBehaviour
 
     public void Update()
     {
-        CheckReady();
+        if (GC.GetGameHappening())
+        {
+
+        }
+        else
+        {
+            CheckReady();
+            PlayerNameText.GetComponent<TextMeshProUGUI>().text = PlayerName;
+        }
+
         PlayerUICanvas.transform.LookAt(Camera.main.transform);
-        PlayerNameText.GetComponent<TextMeshProUGUI>().text = PlayerName;
+        HealthBarSlider.value = (float)currentHealth / 100;
+        EnergyBarSlider.value = (float)currentEnergy / 100;
     }
 
     [Command]
+    //Player on Server is set to ready
+    //_ready is SyncVar so syncs to all clients
     public void CmdSetReady(bool ready)
     {
         _ready = ready;
@@ -91,14 +112,11 @@ public class PlayerController : NetworkBehaviour
 
     void CheckReady()
     {
-        d.Log(gameObject.name + " is " + _ready + " and " + prevReady);
         if (_ready != prevReady)
         {
             //User just updated ready
-            foreach (Renderer r in Renderers)
-            {
-                r.material.color = _ready ? Color.red : Color.white;
-            }
+            ReadyText.text = _ready ? "Ready" : "Not Ready";
+            ReadyText.color = _ready ? Color.green : Color.red;
             prevReady = _ready;
         }
     }
@@ -112,6 +130,7 @@ public class PlayerController : NetworkBehaviour
     [Command]
     private void CmdStartGame()
     {
+        d.LogPersist("Cmd Start Game");
         GameObject Planet = Instantiate(AM.Get("Planet"));
         NetworkServer.Spawn(Planet);
         Planet.gameObject.name = "Planet " + Planet.GetComponent<NetworkIdentity>().netId.ToString();
@@ -122,7 +141,13 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     private void RpcStartGame(GameObject Planet)
     {
-        Planet.transform.parent = AM.Get("GroundImageTarget").transform;
-        GC.StartGame();
+        d.LogPersist("Rpc Start Game");
+        Planet.transform.parent = AssetManager.Instance.Get("GroundImageTarget").transform;
+        GC.StartGame(Planet);
+    }
+
+    public void SetReadyText(bool active)
+    {
+        ReadyText.gameObject.SetActive(active);
     }
 }

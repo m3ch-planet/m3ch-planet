@@ -12,7 +12,6 @@ public class GameController : MonoBehaviour
 
     //Other Game Variables
     UIController UI;
-    AssetManager AM;
     ARDebugger d;
     private static bool GameHappening; //if GameIsHappening, then no new players can join
 
@@ -20,7 +19,6 @@ public class GameController : MonoBehaviour
     void Start()
     {
         UI = GetComponent<UIController>();
-        AM = GetComponent<AssetManager>();
         d = GetComponent<ARDebugger>();
         GameHappening = false;
         LocalPlayer = null;
@@ -29,7 +27,8 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (GameHappening) d.Log("GC Game Happening");
+        else d.Log("GC Game Not Happening");
     }
 
     public static PlayerController GetPlayer(string _ID)
@@ -45,6 +44,7 @@ public class GameController : MonoBehaviour
             Players.Add(_playerId, _player);
             PlayersList.AddLast(_player);
             _player.transform.name = _playerId;
+            _player.gameObject.transform.parent = AssetManager.Instance.Get("GroundImageTarget").transform;
             return;
         }
         Debug.LogError("Game is Happening. Player Can't Join!");
@@ -58,18 +58,23 @@ public class GameController : MonoBehaviour
     }
 
     public void ToggleReady()
-    { 
-        if (LocalPlayer == null)
+    {
+        //Toggles local player ready
+        //finds local player if don't have reference to it yet
+        if (!GameHappening)
         {
-            foreach(PlayerController p in PlayersList)
+            if (LocalPlayer == null)
             {
-                if (p._isLocalPlayer)
+                foreach (PlayerController p in PlayersList)
                 {
-                    LocalPlayer = p;
+                    if (p._isLocalPlayer)
+                    {
+                        LocalPlayer = p;
+                    }
                 }
             }
+            if(LocalPlayer != null) LocalPlayer.CmdSetReady(!LocalPlayer.GetReady());
         }
-        LocalPlayer.CmdSetReady(!LocalPlayer.GetReady());
     }
 
     public bool AreAllPlayersReady()
@@ -81,12 +86,18 @@ public class GameController : MonoBehaviour
         }
         return allPlayersReady;
     }
-    
-    public void StartGame()
+
+    //Called from PlayerController RpcStartGame
+    //Since there is only one instance of GC
+    //When localPlayer calls GC, it affects 
+    //all clients games
+    public void StartGame(GameObject Planet)
     {
+        d.LogPersist("GC Start Game");
         UI.SetWaitRoomPanel(false);
         GameHappening = true;
         GetComponent<TurnController>().InitPlayers(PlayersList);
+        d.LogPersist("GC Done Init Players");
     }
 
     void StopGame()
@@ -98,11 +109,6 @@ public class GameController : MonoBehaviour
     public bool GetGameHappening()
     {
         return GameHappening;
-    }
-
-    public void SetLocalPlayer(PlayerController NewLocalPlayer)
-    {
-        LocalPlayer = NewLocalPlayer;
     }
 
     //Called by server to find the correct player, change that player's name

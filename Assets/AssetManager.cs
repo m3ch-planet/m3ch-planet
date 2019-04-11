@@ -4,8 +4,16 @@ using UnityEngine;
 
 public class AssetManager : MonoBehaviour
 {
+    //Design of this class follows Singleton Design pattern
     public GameObject PlanetPrefab;
     public GameObject GroundImageTarget;
+
+    public static AssetManager Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public GameObject Get(string name)
     {
