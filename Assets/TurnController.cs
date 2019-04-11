@@ -40,4 +40,9 @@ public class TurnController : MonoBehaviour
     {
         
     }
+
+    public PlayerController[] GetPlayers()
+    {
+        return Players;
+    }
 }

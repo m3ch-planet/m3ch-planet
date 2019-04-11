@@ -27,6 +27,7 @@ public class PlayerController : NetworkBehaviour
     //PlayerVariables
     [SyncVar]
     string PlayerName;
+    GameObject PlayerMesh;
 
     //Other Game variables
     GameController GC;
@@ -62,6 +63,7 @@ public class PlayerController : NetworkBehaviour
         MyTurn = false;
         PlayerUICanvas = PlayerNameText.transform.parent.gameObject;
         PlayerUICanvas.GetComponent<Canvas>().worldCamera = Camera.main;
+        PlayerMesh = transform.GetChild(0).gameObject;
     }
 
     public void InitPlayerName(string name)
@@ -97,6 +99,7 @@ public class PlayerController : NetworkBehaviour
     public void CmdSetReady(bool ready)
     {
         _ready = ready;
+        d.LogPersist(gameObject.name + " is " + ready);
         if (GC.AreAllPlayersReady())
             CmdStartGame();
     }
@@ -136,7 +139,10 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     private void RpcStartGame(GameObject Planet)
     {
-        Planet.transform.parent = AM.Get("GroundImageTarget").transform;
+        Planet.transform.parent = AssetManager.Instance.Get("GroundImageTarget").transform;
+        ReadyText.gameObject.SetActive(false);
+        PlayerMesh.GetComponent<Rigidbody>().useGravity = false;
         GC.StartGame();
+        Planet.GetComponent<PlanetGravity>().Init(4);
     }
 }

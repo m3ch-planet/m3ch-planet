@@ -58,6 +58,8 @@ public class GameController : MonoBehaviour
 
     public void ToggleReady()
     {
+        //Toggles local player ready
+        //finds local player if don't have reference to it yet
         if (!GameHappening)
         {
             if (LocalPlayer == null)
@@ -70,7 +72,7 @@ public class GameController : MonoBehaviour
                     }
                 }
             }
-            LocalPlayer.CmdSetReady(!LocalPlayer.GetReady());
+            if(LocalPlayer != null) LocalPlayer.CmdSetReady(!LocalPlayer.GetReady());
         }
     }
 
