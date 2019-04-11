@@ -150,4 +150,9 @@ public class PlayerController : NetworkBehaviour
     {
         ReadyText.gameObject.SetActive(active);
     }
+
+    public string GetPlayerName()
+    {
+        return PlayerName;
+    }
 }

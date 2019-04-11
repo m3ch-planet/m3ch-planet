@@ -117,4 +117,9 @@ public class GameController : MonoBehaviour
     {
         GetPlayer(PLAYER_ID_PREFIX + _playerID).InitPlayerName(name);
     }
+
+    public PlayerController GetLocalPlayer()
+    {
+        return LocalPlayer;
+    }
 }
