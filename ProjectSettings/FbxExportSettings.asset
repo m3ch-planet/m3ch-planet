@@ -24,7 +24,7 @@
         "exportModelSettingsSerialize": {
             "exportFormat": 1,
             "rootMotionTransfer": "",
-            "animatedSkinnedMesh": false,
+            "animatedSkinnedMesh": true,
             "mayaCompatibleNaming": true,
             "include": 2,
             "lodLevel": 0,
