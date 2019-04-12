@@ -21,9 +21,6 @@ public class PlayerController : NetworkBehaviour
     private bool _ready; //whether the Game server can start the game
     private bool prevReady;
 
-    //Turn Variables
-    bool MyTurn; //true if is current player's turn
-
     //PlayerVariables
     [SyncVar]
     string PlayerName;
@@ -32,6 +29,7 @@ public class PlayerController : NetworkBehaviour
     //Other Game variables
     GameController GC;
     AssetManager AM;
+    TurnController TC;
 
     //Debug Variables
     ARDebugger d;
@@ -59,8 +57,8 @@ public class PlayerController : NetworkBehaviour
         GC = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         d = GC.GetComponent<ARDebugger>();
         AM = GC.GetComponent<AssetManager>();
+        TC = GC.GetComponent<TurnController>();
         prevReady = false;
-        MyTurn = false;
         PlayerUICanvas = PlayerNameText.transform.parent.gameObject;
         PlayerUICanvas.GetComponent<Canvas>().worldCamera = Camera.main;
         PlayerMesh = transform.GetChild(0).gameObject;
@@ -121,11 +119,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    public void SetMyTurn(bool turn)
-    {
-        MyTurn = turn;
-    }
-
+    #region Game Initializers
     //Tells server to start game
     [Command]
     private void CmdStartGame()
@@ -155,4 +149,19 @@ public class PlayerController : NetworkBehaviour
     {
         return PlayerName;
     }
+    #endregion
+
+    #region TurnController Helpers
+    [Command]
+    public void CmdEndTurn()
+    {
+        RpcEndTurn();
+    }
+
+    [ClientRpc]
+    public void RpcEndTurn()
+    {
+        TC.DoEndTurn();
+    }
+    #endregion
 }

@@ -1,15 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 //TODO convert into Network behaviour and
 //Sync CurrentPlayer and TurnStartTime 
 // After changing UI for Network HUD
-public class TurnController : MonoBehaviour
+public class TurnController : NetworkBehaviour
 {
     //Turn Variables
+    [SyncVar]
     int currentPlayer;
-    const float TURN_TIME_LIMIT = 30;
+    const float TURN_TIME_LIMIT = 31; //shows up as 30
+    [SyncVar]
+    int TimeLeftInTurn;
     float TurnStartTime; //time when the current turn started
     
     //Player Variables
@@ -50,13 +54,17 @@ public class TurnController : MonoBehaviour
     {
         if(Players != null && Players.Length > 0)
         {
-            float TimeLeftInTurn = TURN_TIME_LIMIT - (Time.time - TurnStartTime);
+            //Only update Time Left In Turn if you are the server
+            if(isServer) TimeLeftInTurn = (int)(TURN_TIME_LIMIT - (Time.time - TurnStartTime));
             //If there is no current player, then init current player
             //If there is no time left in turn, then end the turn
-            if(currentPlayer == -1 || TimeLeftInTurn < 0) EndTurn();
+            if ((currentPlayer == -1 && isServer) || TimeLeftInTurn < 0)
+            {
+                EndTurn();
+            }
             else
             {
-                UI.SetTurnTimeText(TimeLeftInTurn.ToString());
+                UI.SetTurnTimeText(TimeLeftInTurn.ToString() + " seconds left");
             }
         }
         else
@@ -70,7 +78,12 @@ public class TurnController : MonoBehaviour
         return Players;
     }
 
-    void EndTurn()
+    public void EndTurn()
+    {
+        GC.GetLocalPlayer().CmdEndTurn();
+    }
+
+    public void DoEndTurn()
     {
         if (currentPlayer == -1) currentPlayer = 0;
         else currentPlayer = (currentPlayer + 1) % Players.Length;
@@ -79,11 +92,24 @@ public class TurnController : MonoBehaviour
         if (currentPlayerController == GC.GetLocalPlayer())
         {
             UI.SetTurnText("Your Turn");
+            UI.SetPlayerTurnPanel(true);
         }
         else
         {
             UI.SetTurnText(currentPlayerController.GetPlayerName() + "'s Turn");
+            UI.SetPlayerTurnPanel(false);
         }
-        
+    }
+
+    public void Walk()
+    {
+        //TODO
+        print("Walking");
+    }
+
+    public void Attack()
+    {
+        //TODO
+        print("Attacking");
     }
 }

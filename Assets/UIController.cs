@@ -7,8 +7,16 @@ public class UIController : MonoBehaviour
 {
     public GameObject WaitRoomPanel;
     public GameObject TurnPanel;
+    public GameObject PlayerTurnPanel;
     public TextMeshProUGUI TurnText;
     public TextMeshProUGUI TurnTimeText;
+
+    private void Start()
+    {
+        WaitRoomPanel.SetActive(true);
+        TurnPanel.SetActive(false);
+        PlayerTurnPanel.SetActive(false);
+    }
 
     public void SetWaitRoomPanel(bool active)
     {
@@ -18,7 +26,6 @@ public class UIController : MonoBehaviour
     public void SetTurnPanel(bool active)
     {
         TurnPanel.SetActive(active);
-        print("Turn Panel " + TurnPanel.activeSelf);
     }
 
     public void SetTurnText(string s)
@@ -29,5 +36,10 @@ public class UIController : MonoBehaviour
     public void SetTurnTimeText(string s)
     {
         TurnTimeText.text = s;
+    }
+
+    public void SetPlayerTurnPanel(bool active)
+    {
+        PlayerTurnPanel.SetActive(active);
     }
 }
