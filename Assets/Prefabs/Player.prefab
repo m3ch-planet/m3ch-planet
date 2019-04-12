@@ -566,6 +566,7 @@ GameObject:
   - component: {fileID: 4056822151587254484}
   - component: {fileID: 3957781575845674626}
   - component: {fileID: 4990355529943830175}
+  - component: {fileID: 1547851190113902483}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -651,6 +652,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   componentsToDisable: []
+--- !u!95 &1547851190113902483
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5300571177741287233}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 90dac3abf1179b342b84e3c83039fa77, type: 3}
+  m_Controller: {fileID: 9100000, guid: 47edd60644b8f5d49877f1ebbe6cc732, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5576941538249989406
 GameObject:
   m_ObjectHideFlags: 0
@@ -1171,8 +1191,8 @@ Rigidbody:
   m_GameObject: {fileID: 7751772303681899720}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0.1
-  m_AngularDrag: 0.1
+  m_Drag: 0
+  m_AngularDrag: 2.49
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
