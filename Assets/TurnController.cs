@@ -78,10 +78,10 @@ public class TurnController : NetworkBehaviour
     {
         GameObject planet = AssetManager.Instance.Get("Planet");
         Quaternion original = planet.transform.rotation;
-        Vector3 n = GC.GetLocalPlayer().transform.position - planet.transform.position;
+        Vector3 n = Players[currentPlayer].transform.position - planet.transform.position;
         print(n.ToString());
         print(Vector3.up.ToString());
-        Quaternion target = original*Quaternion.FromToRotation(n, Vector3.up); //TODO get the rotation such that player is on top
+        Quaternion target = original*Quaternion.FromToRotation(n, Vector3.up);
         planet.transform.rotation = Quaternion.Slerp(original,target,Time.deltaTime);
     }
 

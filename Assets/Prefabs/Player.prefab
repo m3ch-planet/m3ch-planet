@@ -1135,10 +1135,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7755087063510158476}
-  - component: {fileID: 7692703554585490692}
-  - component: {fileID: 7646231333978963444}
   - component: {fileID: 9155800461631572154}
-  - component: {fileID: 6285312968926869368}
   - component: {fileID: 9120057935481293826}
   m_Layer: 0
   m_Name: PlayerMesh
@@ -1165,45 +1162,6 @@ Transform:
   m_Father: {fileID: 8999000149299138896}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &7692703554585490692
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7751772303681899720}
-  m_Enabled: 0
-  m_Avatar: {fileID: 9000000, guid: 90dac3abf1179b342b84e3c83039fa77, type: 3}
-  m_Controller: {fileID: 9100000, guid: 3fddf5519a321ec4bb1315b9ec0a1a9e, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
---- !u!111 &7646231333978963444
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7751772303681899720}
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: afb6ef035e041ee47bcf60f70f5f1adc, type: 3}
-  m_Animations:
-  - {fileID: 7400000, guid: afb6ef035e041ee47bcf60f70f5f1adc, type: 3}
-  - {fileID: 7400000, guid: 5aa297bdf08ca674caff7a7a7fb33301, type: 3}
-  - {fileID: 7400000, guid: 6d654999dbb48624ca6304d8d5b49be5, type: 3}
-  - {fileID: 7400000, guid: 0869a73c0e0ae734aa743d2ce50a7ad1, type: 3}
-  - {fileID: 7400000, guid: 338747b53ccb281438ca94866ff1d744, type: 3}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!54 &9155800461631572154
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1220,20 +1178,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!136 &6285312968926869368
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7751772303681899720}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  m_Radius: 0.08
-  m_Height: 0.4
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!65 &9120057935481293826
 BoxCollider:
   m_ObjectHideFlags: 0
