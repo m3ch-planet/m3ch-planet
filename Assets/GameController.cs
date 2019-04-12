@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class GameController : MonoBehaviour
 {
@@ -73,7 +74,9 @@ public class GameController : MonoBehaviour
                     }
                 }
             }
-            if(LocalPlayer != null) LocalPlayer.CmdSetReady(!LocalPlayer.GetReady());
+            if (LocalPlayer != null) {
+                LocalPlayer.CmdSetReady(!LocalPlayer.GetReady());
+            }
         }
     }
 
@@ -116,5 +119,10 @@ public class GameController : MonoBehaviour
     public void InitPlayerName(string name,string _playerID)
     {
         GetPlayer(PLAYER_ID_PREFIX + _playerID).InitPlayerName(name);
+    }
+
+    public PlayerController GetLocalPlayer()
+    {
+        return LocalPlayer;
     }
 }
