@@ -137,6 +137,7 @@ public class PlayerController : NetworkBehaviour
     {
         d.LogPersist("Rpc Start Game");
         Planet.transform.parent = AssetManager.Instance.Get("GroundImageTarget").transform;
+        AssetManager.Instance.PlanetPrefab = Planet;
         GC.StartGame(Planet);
     }
 

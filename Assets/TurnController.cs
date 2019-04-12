@@ -65,6 +65,7 @@ public class TurnController : NetworkBehaviour
             else
             {
                 UI.SetTurnTimeText(TimeLeftInTurn.ToString() + " seconds left");
+                SpinPlanetToPlayer();
             }
         }
         else
@@ -72,6 +73,18 @@ public class TurnController : NetworkBehaviour
             d.Log("TC has no Players");
         }
     }
+
+    void SpinPlanetToPlayer()
+    {
+        GameObject planet = AssetManager.Instance.Get("Planet");
+        Quaternion original = planet.transform.rotation;
+        Vector3 n = GC.GetLocalPlayer().transform.position - planet.transform.position;
+        print(n.ToString());
+        print(Vector3.up.ToString());
+        Quaternion target = original*Quaternion.FromToRotation(n, Vector3.up); //TODO get the rotation such that player is on top
+        planet.transform.rotation = Quaternion.Slerp(original,target,Time.deltaTime);
+    }
+
 
     public PlayerController[] GetPlayers()
     {
