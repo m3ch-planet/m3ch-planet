@@ -66,6 +66,14 @@ public class TurnController : NetworkBehaviour
             else
             {
                 UI.SetTurnTimeText(TimeLeftInTurn.ToString() + " seconds left");
+                if (UI.WalkButtonHeldDown())
+                {
+                    HandleWalk();
+                }
+                else
+                {
+                    Players[currentPlayer].transform.GetChild(0).GetComponent<Rigidbody>().angularDrag = 2;
+                }
                 SpinPlanetToPlayer();
             }
         }
@@ -129,9 +137,17 @@ public class TurnController : NetworkBehaviour
         }
     }
 
-    public void Walk()
+    void HandleWalk()
     {
-        //TODO
+        //TODO refactor so player prefab is directly the mesh
+        Players[currentPlayer].transform.GetChild(0).GetComponent<Rigidbody>().angularDrag = 10f;
+        Vector3 forward = Players[currentPlayer].transform.GetChild(0).transform.forward;
+        Players[currentPlayer].transform.Translate(forward*Time.deltaTime);
+        Players[currentPlayer].transform.GetChild(0).transform.localPosition = Vector3.zero;
+        //Straighten the player
+        Vector3 up = Players[currentPlayer].transform.position - AssetManager.Instance.Get("Planet").transform.position;
+        up.Normalize();
+        //Players[currentPlayer].transform.rotation = Quaternion.LookRotation(forward,up);
         print("Walking");
     }
 

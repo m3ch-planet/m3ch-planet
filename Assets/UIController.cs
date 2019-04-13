@@ -10,12 +10,14 @@ public class UIController : MonoBehaviour
     public GameObject PlayerTurnPanel;
     public TextMeshProUGUI TurnText;
     public TextMeshProUGUI TurnTimeText;
+    bool WalkButtonHold;
 
     private void Start()
     {
         WaitRoomPanel.SetActive(true);
         TurnPanel.SetActive(false);
         PlayerTurnPanel.SetActive(false);
+        WalkButtonHold = false;
     }
 
     public void SetWaitRoomPanel(bool active)
@@ -41,5 +43,15 @@ public class UIController : MonoBehaviour
     public void SetPlayerTurnPanel(bool active)
     {
         PlayerTurnPanel.SetActive(active);
+    }
+
+    public bool WalkButtonHeldDown()
+    {
+        return WalkButtonHold;
+    }
+
+    public void SetWalkButtonHoldDown(bool down)
+    {
+        WalkButtonHold = down;
     }
 }
