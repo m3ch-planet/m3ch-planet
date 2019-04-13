@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.UI;
 
+//TODO set up animations
 public class PlayerController : NetworkBehaviour
 {
     //Warfare variables
@@ -25,6 +26,7 @@ public class PlayerController : NetworkBehaviour
     [SyncVar]
     string PlayerName;
     GameObject PlayerMesh;
+    Animator anim;
 
     //Other Game variables
     GameController GC;
@@ -62,6 +64,7 @@ public class PlayerController : NetworkBehaviour
         PlayerUICanvas = PlayerNameText.transform.parent.gameObject;
         PlayerUICanvas.GetComponent<Canvas>().worldCamera = Camera.main;
         PlayerMesh = transform.GetChild(0).gameObject;
+        anim = GetComponent<Animator>();
     }
 
     public void InitPlayerName(string name)
@@ -76,11 +79,19 @@ public class PlayerController : NetworkBehaviour
         currentHealth -= _amt;
     }
 
+    public float GetEnergy()
+    {
+        return currentEnergy;
+    }
+
     public void Update()
     {
         if (GC.GetGameHappening())
         {
-
+            if(TC.GetCurrentPlayer() == this)
+                anim.SetBool("Moving", TC.GetWalking());
+            else
+                anim.SetBool("Moving", false);
         }
         else
         {
@@ -109,10 +120,6 @@ public class PlayerController : NetworkBehaviour
         if(currentEnergy > 0)
         {
             currentEnergy -= Time.deltaTime * 20;
-        }
-        else
-        {
-            TC.EndTurn();
         }
     }
 
@@ -177,5 +184,17 @@ public class PlayerController : NetworkBehaviour
     {
         TC.DoEndTurn(currrentPlayer, TimeStartTurn);
     }
+
+    [Command]
+    public void CmdSendPlayerTransform(Vector3 localPos,Quaternion localRot,string PlayerName)
+    {
+        RpcSendPlayerTransform(localPos,localRot, PlayerName);
+    }
+    [ClientRpc]
+    public void RpcSendPlayerTransform(Vector3 localPos, Quaternion localRot, string PlayerName)
+    {
+        TC.UpdatePlayerNetworkTransforms(localPos, localRot, PlayerName);
+    }
     #endregion
+
 }

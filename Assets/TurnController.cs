@@ -14,8 +14,13 @@ public class TurnController : NetworkBehaviour
     [SyncVar]
     int TimeLeftInTurn;
     int TurnStartTime; //time when the current turn started
-    [SyncVar]
     bool Walking;
+
+    //Player Network Variables
+    Vector3 TargetLocalPos;
+    Quaternion TargetLocalRot;
+    string TargetPlayerName;
+    bool HasEnergy;
     
     //Player Variables
     PlayerController[] Players;
@@ -34,6 +39,7 @@ public class TurnController : NetworkBehaviour
         currentPlayer = -1;
         TurnStartTime = -1;
         UI.SetTurnPanel(false);
+        HasEnergy = true;
     }
 
     public void InitPlayers(LinkedList<PlayerController> PlayersList)
@@ -61,24 +67,77 @@ public class TurnController : NetworkBehaviour
             }
             //If there is no current player, then init current player
             //If there is no time left in turn, then end the turn
-            if ((currentPlayer == -1 && isServer) || TimeLeftInTurn < 0)
+            if ((currentPlayer == -1 && isServer) || 
+                TimeLeftInTurn < 0 || 
+                Players[currentPlayer].GetEnergy() < 0)
             {
-                EndTurn();
+                if (HasEnergy)
+                {
+                    EndTurn();
+                }
             }
             else
             {
                 UI.SetTurnTimeText(TimeLeftInTurn.ToString() + " seconds left");
-                if (Walking)
+                if (Players[currentPlayer]._isLocalPlayer)
                 {
-                    HandleWalk();
+                    if (Walking)
+                    {
+                        HandleWalk();
+                    }
+                    else
+                    {
+                        Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 2;
+                    }
+                    //if is local player then send position to other clients via server
+                    Players[currentPlayer].CmdSendPlayerTransform(
+                        Players[currentPlayer].transform.localPosition,
+                        Players[currentPlayer].transform.localRotation,
+                        Players[currentPlayer].GetPlayerName()
+                        );
                 }
                 else
                 {
-                    //TODO sync to player
-                    Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 2;
+                    SyncCurrentPlayerTransform();
                 }
                 SpinPlanetToPlayer();
             }
+        }
+    }
+
+    public void UpdatePlayerNetworkTransforms(Vector3 localPos,Quaternion localRot, string PlayerName)
+    {
+        TargetLocalPos = localPos;
+        TargetLocalRot = localRot;
+        TargetPlayerName = PlayerName;
+    }
+
+    public void SyncCurrentPlayerTransform()
+    {
+        if (!Players[currentPlayer]._isLocalPlayer && 
+            TargetLocalPos != null && TargetLocalRot != null && TargetPlayerName != null &&
+            Players[currentPlayer].GetPlayerName() == TargetPlayerName)
+        {
+            if(Vector3.Distance(Players[currentPlayer].transform.localPosition,TargetLocalPos) > 0.01) //TODO experiment with changing value
+            {
+                Walking = true;
+                Players[currentPlayer].transform.localPosition =
+                    Vector3.Lerp(
+                        Players[currentPlayer].transform.localPosition,
+                        TargetLocalPos,
+                        Time.deltaTime * 15
+                        );
+            }
+            else
+            {
+                Walking = false;
+                Players[currentPlayer].transform.localPosition = TargetLocalPos;
+            }
+            Players[currentPlayer].transform.localRotation = Quaternion.Slerp(
+                Players[currentPlayer].transform.localRotation,
+                TargetLocalRot,
+                Time.deltaTime*10
+                );
         }
     }
 
@@ -110,8 +169,10 @@ public class TurnController : NetworkBehaviour
         int NewPlayer = currentPlayer;
         if (NewPlayer == -1) NewPlayer = 0;
         else NewPlayer = (NewPlayer + 1) % Players.Length;
+        HasEnergy = false;
+        Walking = false;
         //End Last Player's Turn
-        if(currentPlayer == -1)
+        if (currentPlayer == -1)
         {
             GC.GetLocalPlayer().CmdEndTurn(NewPlayer, CurrentTime());
         }
@@ -123,9 +184,12 @@ public class TurnController : NetworkBehaviour
 
     public void DoEndTurn(int curPlayer, int TimeStartTurn)
     {
+        print("doing end turn " + curPlayer);
         //Start Next Player's Turn
         currentPlayer = curPlayer;
         TurnStartTime = TimeStartTurn;
+        HasEnergy = true;
+        Walking = false;
         PlayerController currentPlayerController = Players[currentPlayer];
         if (currentPlayerController == GC.GetLocalPlayer())
         {
@@ -142,7 +206,7 @@ public class TurnController : NetworkBehaviour
     void HandleWalk()
     {
         Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 10f;
-        Vector3 forward = Players[currentPlayer].transform.forward;
+        Vector3 forward = Players[currentPlayer].transform.forward; //TODO fix bug where player doesn't move forward
         Players[currentPlayer].transform.Translate(forward*Time.deltaTime);
         Players[currentPlayer].CmdDecreaseEnergy();
         //Straighten the player
@@ -158,5 +222,15 @@ public class TurnController : NetworkBehaviour
     public void SetWalking(bool WalkButtonHoldDown)
     {
         Walking = WalkButtonHoldDown;
+    }
+
+    public bool GetWalking()
+    {
+        return Walking;
+    }
+
+    public PlayerController GetCurrentPlayer()
+    {
+        return Players[currentPlayer];
     }
 }
