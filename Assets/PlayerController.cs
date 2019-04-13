@@ -154,15 +154,15 @@ public class PlayerController : NetworkBehaviour
 
     #region TurnController Helpers
     [Command]
-    public void CmdEndTurn()
+    public void CmdEndTurn(int currrentPlayer,int TimeStartTurn)
     {
-        RpcEndTurn();
+        RpcEndTurn(currrentPlayer, TimeStartTurn);
     }
 
     [ClientRpc]
-    public void RpcEndTurn()
+    public void RpcEndTurn(int currrentPlayer, int TimeStartTurn)
     {
-        TC.DoEndTurn();
+        TC.DoEndTurn(currrentPlayer, TimeStartTurn);
     }
     #endregion
 }

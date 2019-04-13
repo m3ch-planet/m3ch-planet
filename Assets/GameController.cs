@@ -26,9 +26,12 @@ public class GameController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        if (GameHappening) d.Log("GC Game Happening");
+        if (GameHappening)
+        {
+            d.Log("GC Players : " + Players.Count + " _ " + PlayersList.Count);
+        }
         else d.Log("GC Game Not Happening");
     }
 
@@ -48,14 +51,18 @@ public class GameController : MonoBehaviour
             _player.gameObject.transform.parent = AssetManager.Instance.Get("GroundImageTarget").transform;
             return;
         }
-        Debug.LogError("Game is Happening. Player Can't Join!");
         //TODO handle kicking the new player out of the server
        
     }
 
     public static void UnRegisterPlayer(string _ID)
     {
-        Players.Remove(_ID);
+        PlayerController p;
+        if (Players.TryGetValue(_ID, out p))
+        {
+            Players.Remove(_ID);
+            PlayersList.Remove(p);
+        }
     }
 
     public void ToggleReady()
@@ -85,7 +92,10 @@ public class GameController : MonoBehaviour
         bool allPlayersReady = true;
         foreach(PlayerController p in PlayersList)
         {
-            if (!p.GetReady()) allPlayersReady = false;
+            if (!p.GetReady())
+            {
+                allPlayersReady = false;
+            }
         }
         return allPlayersReady;
     }
@@ -96,11 +106,9 @@ public class GameController : MonoBehaviour
     //all clients games
     public void StartGame(GameObject Planet)
     {
-        d.LogPersist("GC Start Game");
         UI.SetWaitRoomPanel(false);
         GameHappening = true;
         GetComponent<TurnController>().InitPlayers(PlayersList);
-        d.LogPersist("GC Done Init Players");
     }
 
     void StopGame()
