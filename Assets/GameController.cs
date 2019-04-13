@@ -25,16 +25,6 @@ public class GameController : MonoBehaviour
         LocalPlayer = null;
     }
 
-    // Update is called once per frame
-    void LateUpdate()
-    {
-        if (GameHappening)
-        {
-            d.Log("GC Players : " + Players.Count + " _ " + PlayersList.Count);
-        }
-        else d.Log("GC Game Not Happening");
-    }
-
     public static PlayerController GetPlayer(string _ID)
     {
         return Players[_ID];

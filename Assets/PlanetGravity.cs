@@ -73,7 +73,6 @@ public class PlanetGravity : MonoBehaviour
         //TODO handle when a player disconnects or leaves the room
         if (RB != null && RB.Length > 0)
         {
-            d.Log("Planet Gravity Rigid Bodies" + RB.Length);
             foreach (Rigidbody rb in RB)
             {
                 Vector3 force = transform.position - rb.transform.position;
@@ -81,6 +80,5 @@ public class PlanetGravity : MonoBehaviour
                 rb.AddForce(force);
             }
         }
-        else d.Log("No Rigidbodies");
     }
 }

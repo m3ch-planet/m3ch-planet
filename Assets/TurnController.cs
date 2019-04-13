@@ -66,20 +66,8 @@ public class TurnController : NetworkBehaviour
             else
             {
                 UI.SetTurnTimeText(TimeLeftInTurn.ToString() + " seconds left");
-                if (isServer)
-                {
-                    d.Log("TC IS Server");
-                    SpinPlanetToPlayer();
-                }
-                else
-                {
-                    d.Log("TC IS NOT SERVER");
-                }
+                SpinPlanetToPlayer();
             }
-        }
-        else
-        {
-            d.Log("TC has no Players");
         }
     }
 
@@ -90,7 +78,12 @@ public class TurnController : NetworkBehaviour
         Vector3 n = Players[currentPlayer].transform.position - planet.transform.position;
         Quaternion target = Quaternion.FromToRotation(n, Vector3.up)*original;
         planet.transform.rotation = Quaternion.Slerp(original,target,Time.deltaTime*2);
-        d.Log("Spinning Planet to " + Players[currentPlayer].name + " by " + (target*Quaternion.Inverse(original)).eulerAngles.ToString());
+    }
+
+    //returns time in terms of seconds
+    private int CurrentTime()
+    {
+        return -(int)(System.DateTime.UtcNow.Ticks / 10000000);
     }
 
 
@@ -111,9 +104,11 @@ public class TurnController : NetworkBehaviour
 
     public void DoEndTurn(int curPlayer, int TimeStartTurn)
     {
+        //End Last Player's Turn TODO
+        
+        //Start Next Player's Turn
         currentPlayer = curPlayer;
         TurnStartTime = TimeStartTurn;
-        d.LogPersist("new player " + Players[currentPlayer].GetPlayerName() + " " + TurnStartTime.ToString());
         PlayerController currentPlayerController = Players[currentPlayer];
 
         if (currentPlayerController == GC.GetLocalPlayer())
@@ -140,9 +135,5 @@ public class TurnController : NetworkBehaviour
         print("Attacking");
     }
 
-    //returns time in terms of seconds
-    private int CurrentTime()
-    {
-        return -(int)(System.DateTime.UtcNow.Ticks / 10000000);
-    }
+   
 }

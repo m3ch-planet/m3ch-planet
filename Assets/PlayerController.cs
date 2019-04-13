@@ -119,12 +119,21 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public void SetReadyText(bool active)
+    {
+        ReadyText.gameObject.SetActive(active);
+    }
+
+    public string GetPlayerName()
+    {
+        return PlayerName;
+    }
+
     #region Game Initializers
     //Tells server to start game
     [Command]
     private void CmdStartGame()
     {
-        d.LogPersist("Cmd Start Game");
         GameObject Planet = Instantiate(AM.Get("Planet"));
         NetworkServer.Spawn(Planet);
         Planet.gameObject.name = "Planet " + Planet.GetComponent<NetworkIdentity>().netId.ToString();
@@ -135,20 +144,9 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     private void RpcStartGame(GameObject Planet)
     {
-        d.LogPersist("Rpc Start Game");
         Planet.transform.parent = AssetManager.Instance.Get("GroundImageTarget").transform;
         AssetManager.Instance.PlanetPrefab = Planet;
         GC.StartGame(Planet);
-    }
-
-    public void SetReadyText(bool active)
-    {
-        ReadyText.gameObject.SetActive(active);
-    }
-
-    public string GetPlayerName()
-    {
-        return PlayerName;
     }
     #endregion
 
