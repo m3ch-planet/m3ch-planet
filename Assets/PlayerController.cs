@@ -9,11 +9,11 @@ public class PlayerController : NetworkBehaviour
 {
     //Warfare variables
     int maxHealth = 100;
-    int maxEnergy = 100;
+    float maxEnergy = 100f;
     [SyncVar]
     int currentHealth;
     [SyncVar]
-    int currentEnergy;
+    float currentEnergy;
 
     //Networking variables
     public bool _isLocalPlayer;
@@ -89,8 +89,8 @@ public class PlayerController : NetworkBehaviour
         }
 
         PlayerUICanvas.transform.LookAt(Camera.main.transform);
-        HealthBarSlider.value = Mathf.Lerp(HealthBarSlider.value, (float)currentHealth / 100, Time.deltaTime*3);
-        EnergyBarSlider.value = Mathf.Lerp(EnergyBarSlider.value, (float)currentEnergy / 100, Time.deltaTime*3); 
+        HealthBarSlider.value = Mathf.Lerp(HealthBarSlider.value, (float)currentHealth / 100, Time.deltaTime*6);
+        EnergyBarSlider.value = Mathf.Lerp(EnergyBarSlider.value, currentEnergy / 100, Time.deltaTime*6); 
     }
 
     [Command]
@@ -101,6 +101,19 @@ public class PlayerController : NetworkBehaviour
         _ready = ready;
         if (GC.AreAllPlayersReady())
             CmdStartGame();
+    }
+
+    [Command]
+    public void CmdDecreaseEnergy()
+    {
+        if(currentEnergy > 0)
+        {
+            currentEnergy -= Time.deltaTime * 20;
+        }
+        else
+        {
+            TC.EndTurn();
+        }
     }
 
     public bool GetReady()

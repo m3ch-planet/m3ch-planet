@@ -14,6 +14,8 @@ public class TurnController : NetworkBehaviour
     [SyncVar]
     int TimeLeftInTurn;
     int TurnStartTime; //time when the current turn started
+    [SyncVar]
+    bool Walking;
     
     //Player Variables
     PlayerController[] Players;
@@ -66,13 +68,14 @@ public class TurnController : NetworkBehaviour
             else
             {
                 UI.SetTurnTimeText(TimeLeftInTurn.ToString() + " seconds left");
-                if (UI.WalkButtonHeldDown())
+                if (Walking)
                 {
                     HandleWalk();
                 }
                 else
                 {
-                    Players[currentPlayer].transform.GetChild(0).GetComponent<Rigidbody>().angularDrag = 2;
+                    //TODO sync to player
+                    Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 2;
                 }
                 SpinPlanetToPlayer();
             }
@@ -124,7 +127,6 @@ public class TurnController : NetworkBehaviour
         currentPlayer = curPlayer;
         TurnStartTime = TimeStartTurn;
         PlayerController currentPlayerController = Players[currentPlayer];
-
         if (currentPlayerController == GC.GetLocalPlayer())
         {
             UI.SetTurnText("Your Turn");
@@ -139,16 +141,12 @@ public class TurnController : NetworkBehaviour
 
     void HandleWalk()
     {
-        //TODO refactor so player prefab is directly the mesh
-        Players[currentPlayer].transform.GetChild(0).GetComponent<Rigidbody>().angularDrag = 10f;
-        Vector3 forward = Players[currentPlayer].transform.GetChild(0).transform.forward;
+        Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 10f;
+        Vector3 forward = Players[currentPlayer].transform.forward;
         Players[currentPlayer].transform.Translate(forward*Time.deltaTime);
-        Players[currentPlayer].transform.GetChild(0).transform.localPosition = Vector3.zero;
+        Players[currentPlayer].CmdDecreaseEnergy();
         //Straighten the player
-        Vector3 up = Players[currentPlayer].transform.position - AssetManager.Instance.Get("Planet").transform.position;
-        up.Normalize();
-        //Players[currentPlayer].transform.rotation = Quaternion.LookRotation(forward,up);
-        print("Walking");
+        AssetManager.Instance.Get("Planet").GetComponent<Planet>().ClampPlayerUpright(Players[currentPlayer]);
     }
 
     public void Attack()
@@ -157,5 +155,8 @@ public class TurnController : NetworkBehaviour
         print("Attacking");
     }
 
-   
+    public void SetWalking(bool WalkButtonHoldDown)
+    {
+        Walking = WalkButtonHoldDown;
+    }
 }
