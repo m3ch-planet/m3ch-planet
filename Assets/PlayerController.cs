@@ -89,8 +89,8 @@ public class PlayerController : NetworkBehaviour
         }
 
         PlayerUICanvas.transform.LookAt(Camera.main.transform);
-        HealthBarSlider.value = (float)currentHealth / 100;
-        EnergyBarSlider.value = (float)currentEnergy / 100;
+        HealthBarSlider.value = Mathf.Lerp(HealthBarSlider.value, (float)currentHealth / 100, Time.deltaTime*3);
+        EnergyBarSlider.value = Mathf.Lerp(EnergyBarSlider.value, (float)currentEnergy / 100, Time.deltaTime*3); 
     }
 
     [Command]
@@ -154,6 +154,8 @@ public class PlayerController : NetworkBehaviour
     [Command]
     public void CmdEndTurn(int currrentPlayer,int TimeStartTurn)
     {
+        currentEnergy = 0;
+        TC.GetPlayers()[currrentPlayer].currentEnergy = maxEnergy;
         RpcEndTurn(currrentPlayer, TimeStartTurn);
     }
 

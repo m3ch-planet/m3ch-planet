@@ -99,13 +99,19 @@ public class TurnController : NetworkBehaviour
         int NewPlayer = currentPlayer;
         if (NewPlayer == -1) NewPlayer = 0;
         else NewPlayer = (NewPlayer + 1) % Players.Length;
-        GC.GetLocalPlayer().CmdEndTurn(NewPlayer, CurrentTime());
+        //End Last Player's Turn
+        if(currentPlayer == -1)
+        {
+            GC.GetLocalPlayer().CmdEndTurn(NewPlayer, CurrentTime());
+        }
+        else
+        {
+            Players[currentPlayer].CmdEndTurn(NewPlayer, CurrentTime());
+        }
     }
 
     public void DoEndTurn(int curPlayer, int TimeStartTurn)
     {
-        //End Last Player's Turn TODO
-        
         //Start Next Player's Turn
         currentPlayer = curPlayer;
         TurnStartTime = TimeStartTurn;
