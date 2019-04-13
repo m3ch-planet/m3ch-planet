@@ -22,7 +22,6 @@ public class PlanetGravity : MonoBehaviour
         GC = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         d = GC.gameObject.GetComponent<ARDebugger>();
         TC = GC.gameObject.GetComponent<TurnController>();
-        d.LogPersist("Got TC " + TC.name);
     }
 
     public void Init(int InitSeed)
@@ -65,7 +64,7 @@ public class PlanetGravity : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (!init && TC.GetPlayers().Length > 0)
         {
@@ -74,7 +73,7 @@ public class PlanetGravity : MonoBehaviour
         //TODO handle when a player disconnects or leaves the room
         if (RB != null && RB.Length > 0)
         {
-            d.Log("Planet Gravity " + RB.Length);
+            d.Log("Planet Gravity Rigid Bodies" + RB.Length);
             foreach (Rigidbody rb in RB)
             {
                 Vector3 force = transform.position - rb.transform.position;
