@@ -21,7 +21,7 @@ public class TurnController : NetworkBehaviour
     Quaternion TargetLocalRot;
     string TargetPlayerName;
     bool HasEnergy;
-    
+
     //Player Variables
     PlayerController[] Players;
 
@@ -47,7 +47,7 @@ public class TurnController : NetworkBehaviour
         //Called when Game Starts
         Players = new PlayerController[PlayersList.Count];
         LinkedListNode<PlayerController> cur = PlayersList.First;
-        for(int i = 0; i < PlayersList.Count; i++)
+        for (int i = 0; i < PlayersList.Count; i++)
         {
             Players[i] = cur.Value;
             cur = cur.Next;
@@ -58,7 +58,7 @@ public class TurnController : NetworkBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        if(Players != null && Players.Length > 0)
+        if (Players != null && Players.Length > 0)
         {
             //Only update Time Left In Turn if you are the server
             if (isServer)
@@ -67,9 +67,9 @@ public class TurnController : NetworkBehaviour
             }
             //If there is no current player, then init current player
             //If there is no time left in turn, then end the turn
-            if ((currentPlayer == -1 && isServer) || 
-                TimeLeftInTurn < 0 || 
-                Players[currentPlayer].GetEnergy() < 0)
+            if ((currentPlayer == -1 && isServer) ||
+                TimeLeftInTurn < 0 ||
+                Players[currentPlayer].GetEnergy() < 0) //TODO handle index out of bounds
             {
                 if (HasEnergy)
                 {
@@ -79,7 +79,7 @@ public class TurnController : NetworkBehaviour
             else
             {
                 UI.SetTurnTimeText(TimeLeftInTurn.ToString() + " seconds left");
-                if (Players[currentPlayer]._isLocalPlayer)
+                if (Players[currentPlayer]._isLocalPlayer) //TODO handle index out of bounds 
                 {
                     if (Walking)
                     {
@@ -89,6 +89,7 @@ public class TurnController : NetworkBehaviour
                     {
                         Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 2;
                     }
+                    AlignPlayerWithCamera();
                     //if is local player then send position to other clients via server
                     Players[currentPlayer].CmdSendPlayerTransform(
                         Players[currentPlayer].transform.localPosition,
@@ -105,7 +106,8 @@ public class TurnController : NetworkBehaviour
         }
     }
 
-    public void UpdatePlayerNetworkTransforms(Vector3 localPos,Quaternion localRot, string PlayerName)
+    #region Networking
+    public void UpdatePlayerNetworkTransforms(Vector3 localPos, Quaternion localRot, string PlayerName)
     {
         TargetLocalPos = localPos;
         TargetLocalRot = localRot;
@@ -114,11 +116,11 @@ public class TurnController : NetworkBehaviour
 
     public void SyncCurrentPlayerTransform()
     {
-        if (!Players[currentPlayer]._isLocalPlayer && 
+        if (!Players[currentPlayer]._isLocalPlayer &&
             TargetLocalPos != null && TargetLocalRot != null && TargetPlayerName != null &&
             Players[currentPlayer].GetPlayerName() == TargetPlayerName)
         {
-            if(Vector3.Distance(Players[currentPlayer].transform.localPosition,TargetLocalPos) > 0.01) //TODO experiment with changing value
+            if (Vector3.Distance(Players[currentPlayer].transform.localPosition, TargetLocalPos) > 0.01) //TODO experiment with changing value
             {
                 Walking = true;
                 Players[currentPlayer].transform.localPosition =
@@ -136,18 +138,19 @@ public class TurnController : NetworkBehaviour
             Players[currentPlayer].transform.localRotation = Quaternion.Slerp(
                 Players[currentPlayer].transform.localRotation,
                 TargetLocalRot,
-                Time.deltaTime*10
+                Time.deltaTime * 10
                 );
         }
     }
+    #endregion
 
     void SpinPlanetToPlayer()
     {
         GameObject planet = AssetManager.Instance.Get("Planet");
         Quaternion original = planet.transform.rotation;
         Vector3 n = Players[currentPlayer].transform.position - planet.transform.position;
-        Quaternion target = Quaternion.FromToRotation(n, Vector3.up)*original;
-        planet.transform.rotation = Quaternion.Slerp(original,target,Time.deltaTime*2);
+        Quaternion target = Quaternion.FromToRotation(n, Vector3.up) * original;
+        planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 2);
     }
 
     //returns time in terms of seconds
@@ -155,7 +158,6 @@ public class TurnController : NetworkBehaviour
     {
         return -(int)(System.DateTime.UtcNow.Ticks / 10000000);
     }
-
 
     public PlayerController[] GetPlayers()
     {
@@ -206,17 +208,32 @@ public class TurnController : NetworkBehaviour
     void HandleWalk()
     {
         Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 10f;
-        Vector3 forward = Players[currentPlayer].transform.forward; //TODO fix bug where player doesn't move forward
-        Players[currentPlayer].transform.Translate(forward*Time.deltaTime);
+        Players[currentPlayer].transform.position = Players[currentPlayer].transform.position + GetCurrentPlayerForward() * Time.deltaTime;
         Players[currentPlayer].CmdDecreaseEnergy();
         //Straighten the player
         AssetManager.Instance.Get("Planet").GetComponent<Planet>().ClampPlayerUpright(Players[currentPlayer]);
     }
 
-    public void Attack()
+    void AlignPlayerWithCamera()
     {
-        //TODO
-        print("Attacking");
+        Players[currentPlayer].transform.rotation = Quaternion.LookRotation(GetCurrentPlayerForward(), GetCurrentPlayerUp());
+    }
+
+    Vector3 GetCurrentPlayerForward()
+    {
+        Vector3 right = Vector3.Cross(
+            Players[currentPlayer].transform.position - Camera.main.transform.position,
+            GetCurrentPlayerUp());
+        right.Normalize();
+        Vector3 forward = Vector3.Cross(GetCurrentPlayerUp(), right);
+        print(forward.normalized);
+        return forward.normalized;
+    }
+
+    Vector3 GetCurrentPlayerUp()
+    {
+        Vector3 up = Players[currentPlayer].transform.position - AssetManager.Instance.Get("Planet").transform.position;
+        return up.normalized;
     }
 
     public void SetWalking(bool WalkButtonHoldDown)
@@ -229,8 +246,17 @@ public class TurnController : NetworkBehaviour
         return Walking;
     }
 
+    public void Attack()
+    {
+        //TODO
+        print("Attacking");
+    }
+
     public PlayerController GetCurrentPlayer()
     {
-        return Players[currentPlayer];
+        if (currentPlayer > -1 && currentPlayer < Players.Length)
+            return Players[currentPlayer];
+        else
+            return null;
     }
 }
