@@ -86,5 +86,7 @@ public class Planet : MonoBehaviour
         {
             p.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
         }
+
+        //p.transform.rotation = Quaternion.LookRotation()
     }
 }
