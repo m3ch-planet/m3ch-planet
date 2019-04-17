@@ -32,6 +32,7 @@ public class TurnController : NetworkBehaviour
         UI = GC.gameObject.GetComponent<UIController>();
         currentPlayer = -1;
         TurnStartTime = -1f;
+        UI.SetTurnPanel(false);
     }
 
     public void InitPlayers(LinkedList<PlayerController> PlayersList)
