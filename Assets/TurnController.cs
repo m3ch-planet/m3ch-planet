@@ -2,20 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using System;
 
-//TODO convert into Network behaviour and
-//Sync CurrentPlayer and TurnStartTime 
-// After changing UI for Network HUD
+//TODO change date time from system to unity engine
 public class TurnController : NetworkBehaviour
 {
     //Turn Variables
     [SyncVar]
     int currentPlayer;
-    const float TURN_TIME_LIMIT = 31; //shows up as 30
+    const int TURN_TIME_LIMIT = 30;
     [SyncVar]
     int TimeLeftInTurn;
-    float TurnStartTime; //time when the current turn started
-    
+    int TurnStartTime; //time when the current turn started
+    bool Walking;
+
+    //Player Network Variables
+    Vector3 TargetLocalPos;
+    Quaternion TargetLocalRot;
+    string TargetPlayerName;
+    bool HasEnergy;
+
     //Player Variables
     PlayerController[] Players;
 
@@ -31,17 +37,17 @@ public class TurnController : NetworkBehaviour
         d = GC.gameObject.GetComponent<ARDebugger>();
         UI = GC.gameObject.GetComponent<UIController>();
         currentPlayer = -1;
-        TurnStartTime = -1f;
+        TurnStartTime = -1;
         UI.SetTurnPanel(false);
+        HasEnergy = true;
     }
 
     public void InitPlayers(LinkedList<PlayerController> PlayersList)
     {
         //Called when Game Starts
-        d.LogPersist("TC initing players");
         Players = new PlayerController[PlayersList.Count];
         LinkedListNode<PlayerController> cur = PlayersList.First;
-        for(int i = 0; i < PlayersList.Count; i++)
+        for (int i = 0; i < PlayersList.Count; i++)
         {
             Players[i] = cur.Value;
             cur = cur.Next;
@@ -50,58 +56,143 @@ public class TurnController : NetworkBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        if(Players != null && Players.Length > 0)
+        if (Players != null && Players.Length > 0)
         {
             //Only update Time Left In Turn if you are the server
-            if(isServer) TimeLeftInTurn = (int)(TURN_TIME_LIMIT - (Time.time - TurnStartTime));
+            if (isServer)
+            {
+                TimeLeftInTurn = TURN_TIME_LIMIT - (TurnStartTime - CurrentTime());
+            }
             //If there is no current player, then init current player
             //If there is no time left in turn, then end the turn
-            if ((currentPlayer == -1 && isServer) || TimeLeftInTurn < 0)
+            if ((currentPlayer == -1 && isServer) ||
+                TimeLeftInTurn < 0 ||
+                Players[currentPlayer].GetEnergy() < 0) //TODO handle index out of bounds
             {
-                EndTurn();
+                if (HasEnergy)
+                {
+                    EndTurn();
+                }
             }
             else
             {
                 UI.SetTurnTimeText(TimeLeftInTurn.ToString() + " seconds left");
+                if (Players[currentPlayer]._isLocalPlayer) //TODO handle index out of bounds 
+                {
+                    if (Walking)
+                    {
+                        HandleWalk();
+                    }
+                    else
+                    {
+                        Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 2;
+                    }
+                    AlignPlayerWithCamera();
+                    //if is local player then send position to other clients via server
+                    Players[currentPlayer].CmdSendPlayerTransform(
+                        Players[currentPlayer].transform.localPosition,
+                        Players[currentPlayer].transform.localRotation,
+                        Players[currentPlayer].GetPlayerName()
+                        );
+                }
+                else
+                {
+                    SyncCurrentPlayerTransform();
+                }
                 SpinPlanetToPlayer();
             }
         }
-        else
+    }
+
+    #region Networking
+    public void UpdatePlayerNetworkTransforms(Vector3 localPos, Quaternion localRot, string PlayerName)
+    {
+        TargetLocalPos = localPos;
+        TargetLocalRot = localRot;
+        TargetPlayerName = PlayerName;
+    }
+
+    public void SyncCurrentPlayerTransform()
+    {
+        if (!Players[currentPlayer]._isLocalPlayer &&
+            TargetLocalPos != null && TargetLocalRot != null && TargetPlayerName != null &&
+            Players[currentPlayer].GetPlayerName() == TargetPlayerName)
         {
-            d.Log("TC has no Players");
+            if (Vector3.Distance(Players[currentPlayer].transform.localPosition, TargetLocalPos) > 0.01) //TODO experiment with changing value
+            {
+                Walking = true;
+                Players[currentPlayer].transform.localPosition =
+                    Vector3.Lerp(
+                        Players[currentPlayer].transform.localPosition,
+                        TargetLocalPos,
+                        Time.deltaTime * 15
+                        );
+            }
+            else
+            {
+                Walking = false;
+                Players[currentPlayer].transform.localPosition = TargetLocalPos;
+            }
+            Players[currentPlayer].transform.localRotation = Quaternion.Slerp(
+                Players[currentPlayer].transform.localRotation,
+                TargetLocalRot,
+                Time.deltaTime * 10
+                );
         }
     }
+    #endregion
 
     void SpinPlanetToPlayer()
     {
         GameObject planet = AssetManager.Instance.Get("Planet");
         Quaternion original = planet.transform.rotation;
         Vector3 n = Players[currentPlayer].transform.position - planet.transform.position;
-        print(n.ToString());
-        print(Vector3.up.ToString());
-        Quaternion target = original*Quaternion.FromToRotation(n, Vector3.up);
-        planet.transform.rotation = Quaternion.Slerp(original,target,Time.deltaTime);
+        Quaternion target = Quaternion.FromToRotation(n, Vector3.up) * original;
+        planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 2);
     }
 
+    //returns time in terms of seconds
+    private int CurrentTime()
+    {
+        return -(int)(System.DateTime.UtcNow.Ticks / 10000000);
+    }
 
     public PlayerController[] GetPlayers()
     {
         return Players;
     }
 
+    //Player's Local Device tells the Local Player Controller
+    //To send a command to the server
     public void EndTurn()
     {
-        GC.GetLocalPlayer().CmdEndTurn();
+        int NewPlayer = currentPlayer;
+        if (NewPlayer == -1) NewPlayer = 0;
+        else NewPlayer = (NewPlayer + 1) % Players.Length;
+        HasEnergy = false;
+        Walking = false;
+        //End Last Player's Turn
+        if (currentPlayer == -1)
+        {
+            GC.GetLocalPlayer().CmdEndTurn(NewPlayer, CurrentTime());
+        }
+        else
+        {
+            Players[currentPlayer].CmdEndTurn(NewPlayer, CurrentTime());
+        }
     }
 
-    public void DoEndTurn()
+    public void DoEndTurn(int curPlayer, int TimeStartTurn)
     {
-        if (currentPlayer == -1) currentPlayer = 0;
-        else currentPlayer = (currentPlayer + 1) % Players.Length;
+        print("doing end turn " + curPlayer);
+        //Start Next Player's Turn
+        currentPlayer = curPlayer;
+        TurnStartTime = TimeStartTurn;
+        HasEnergy = true;
+        Walking = false;
         PlayerController currentPlayerController = Players[currentPlayer];
-        TurnStartTime = Time.time;
         if (currentPlayerController == GC.GetLocalPlayer())
         {
             UI.SetTurnText("Your Turn");
@@ -114,15 +205,58 @@ public class TurnController : NetworkBehaviour
         }
     }
 
-    public void Walk()
+    void HandleWalk()
     {
-        //TODO
-        print("Walking");
+        Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 10f;
+        Players[currentPlayer].transform.position = Players[currentPlayer].transform.position + GetCurrentPlayerForward() * Time.deltaTime;
+        Players[currentPlayer].CmdDecreaseEnergy();
+        //Straighten the player
+        AssetManager.Instance.Get("Planet").GetComponent<Planet>().ClampPlayerUpright(Players[currentPlayer]);
+    }
+
+    void AlignPlayerWithCamera()
+    {
+        Players[currentPlayer].transform.rotation = Quaternion.LookRotation(GetCurrentPlayerForward(), GetCurrentPlayerUp());
+    }
+
+    Vector3 GetCurrentPlayerForward()
+    {
+        Vector3 right = Vector3.Cross(
+            Players[currentPlayer].transform.position - Camera.main.transform.position,
+            GetCurrentPlayerUp());
+        right.Normalize();
+        Vector3 forward = Vector3.Cross(GetCurrentPlayerUp(), right);
+        print(forward.normalized);
+        return forward.normalized;
+    }
+
+    Vector3 GetCurrentPlayerUp()
+    {
+        Vector3 up = Players[currentPlayer].transform.position - AssetManager.Instance.Get("Planet").transform.position;
+        return up.normalized;
+    }
+
+    public void SetWalking(bool WalkButtonHoldDown)
+    {
+        Walking = WalkButtonHoldDown;
+    }
+
+    public bool GetWalking()
+    {
+        return Walking;
     }
 
     public void Attack()
     {
         //TODO
         print("Attacking");
+    }
+
+    public PlayerController GetCurrentPlayer()
+    {
+        if (currentPlayer > -1 && currentPlayer < Players.Length)
+            return Players[currentPlayer];
+        else
+            return null;
     }
 }

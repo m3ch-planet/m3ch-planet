@@ -1,15 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class PlanetGravity : MonoBehaviour
+public class Planet : MonoBehaviour
 {
     //Game Variables
     GameController GC;
     TurnController TC;
     Rigidbody[] RB;
     ARDebugger d;
-
 
     //Player Book Keeping
     PlayerController[] PCs;
@@ -22,7 +22,6 @@ public class PlanetGravity : MonoBehaviour
         GC = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         d = GC.gameObject.GetComponent<ARDebugger>();
         TC = GC.gameObject.GetComponent<TurnController>();
-        d.LogPersist("Got TC " + TC.name);
     }
 
     public void Init(int InitSeed)
@@ -31,7 +30,7 @@ public class PlanetGravity : MonoBehaviour
         RB = new Rigidbody[PCs.Length];
         for (int i = 0; i < PCs.Length; i++)
         {
-            RB[i] = PCs[i].transform.GetChild(0).gameObject.GetComponent<Rigidbody>();
+            RB[i] = PCs[i].GetComponent<Rigidbody>();
             RB[i].useGravity = false;
             PCs[i].SetReadyText(false);
         }
@@ -48,24 +47,13 @@ public class PlanetGravity : MonoBehaviour
             Vector3 n = Player.transform.position - transform.position;
             n = n.normalized * (transform.localScale.x + 0.8f);
             Player.transform.position = transform.position + n;
-            //Align Player's rotation to planet's normal
-            RaycastHit hit;
-            if(Physics.Raycast(
-                Player.transform.position, //Shoot a ray from player's position
-                -n,  //in the direction from the player to the planet
-                out hit, //store the ray hit in hit
-                Mathf.Infinity, //no limit to distance
-                1<<9) //only detect objects in layer 9 (Planet)
-                )
-            {
-                Player.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            }
+            ClampPlayerUpright(Player);
         }
         init = true;
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (!init && TC.GetPlayers().Length > 0)
         {
@@ -74,7 +62,6 @@ public class PlanetGravity : MonoBehaviour
         //TODO handle when a player disconnects or leaves the room
         if (RB != null && RB.Length > 0)
         {
-            d.Log("Planet Gravity " + RB.Length);
             foreach (Rigidbody rb in RB)
             {
                 Vector3 force = transform.position - rb.transform.position;
@@ -82,6 +69,24 @@ public class PlanetGravity : MonoBehaviour
                 rb.AddForce(force);
             }
         }
-        else d.Log("No Rigidbodies");
+    }
+
+    public void ClampPlayerUpright(PlayerController p)
+    {
+        Vector3 n = (p.transform.position - transform.position).normalized;
+        //Align Player's rotation to planet's normal
+        RaycastHit hit;
+        if (Physics.Raycast(
+            p.transform.position, //Shoot a ray from player's position
+            -n,  //in the direction from the player to the planet
+            out hit, //store the ray hit in hit
+            Mathf.Infinity, //no limit to distance
+            1 << 9) //only detect objects in layer 9 (Planet)
+            )
+        {
+            p.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+        }
+
+        //p.transform.rotation = Quaternion.LookRotation()
     }
 }
