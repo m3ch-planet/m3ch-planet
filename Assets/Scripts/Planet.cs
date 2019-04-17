@@ -21,7 +21,8 @@ public class Planet : MonoBehaviour
         init = false;
         GC = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         d = GC.gameObject.GetComponent<ARDebugger>();
-        TC = GC.gameObject.GetComponent<TurnController>();
+        TC = GameObject.Find("TurnController").GetComponent<TurnController>();
+        //TC = GC.gameObject.GetComponent<TurnController>();
     }
 
     public void Init(int InitSeed)
