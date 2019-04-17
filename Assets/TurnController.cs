@@ -186,7 +186,6 @@ public class TurnController : NetworkBehaviour
 
     public void DoEndTurn(int curPlayer, int TimeStartTurn)
     {
-        print("doing end turn " + curPlayer);
         //Start Next Player's Turn
         currentPlayer = curPlayer;
         TurnStartTime = TimeStartTurn;
@@ -226,7 +225,6 @@ public class TurnController : NetworkBehaviour
             GetCurrentPlayerUp());
         right.Normalize();
         Vector3 forward = Vector3.Cross(GetCurrentPlayerUp(), right);
-        print(forward.normalized);
         return forward.normalized;
     }
 
