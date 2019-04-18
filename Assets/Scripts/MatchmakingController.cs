@@ -29,6 +29,12 @@ public class MatchmakingController : MonoBehaviour
 
     void Start()
     {
+        // Disable the default Unity HUD
+        NetworkManagerHUD hud = FindObjectOfType<NetworkManagerHUD>();
+        if (hud != null) {
+            hud.showGUI = false;
+        }
+
         // Set up network manager
         networkManager = NetworkManager.singleton;
         ui = GameObject.Find("GameController").GetComponentInChildren<UIController>();
