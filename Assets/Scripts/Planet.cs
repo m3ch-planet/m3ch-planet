@@ -8,11 +8,10 @@ public class Planet : MonoBehaviour
     //Game Variables
     GameController GC;
     TurnController TC;
-    Rigidbody[] RB;
+    List<Rigidbody> RB;
     ARDebugger d;
 
     //Player Book Keeping
-    PlayerController[] PCs;
     bool init;
 
     // Start is called before the first frame update
@@ -21,18 +20,18 @@ public class Planet : MonoBehaviour
         init = false;
         GC = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         d = GC.gameObject.GetComponent<ARDebugger>();
-        TC = GameObject.Find("TurnController").GetComponent<TurnController>();
-        //TC = GC.gameObject.GetComponent<TurnController>();
+        TC = GC.gameObject.GetComponent<TurnController>();
+        RB = new List<Rigidbody>();
     }
 
     public void Init(int InitSeed)
     {
-        PCs = TC.GetPlayers();
-        RB = new Rigidbody[PCs.Length];
+        PlayerController[] PCs = TC.GetPlayers();
         for (int i = 0; i < PCs.Length; i++)
         {
-            RB[i] = PCs[i].GetComponent<Rigidbody>();
-            RB[i].useGravity = false;
+            RB.Add(PCs[i].GetComponent<Rigidbody>());
+            Rigidbody rb = RB[RB.Count-1];
+            rb.useGravity = false;
             PCs[i].SetReadyText(false);
         }
         Random.seed = InitSeed;
@@ -61,10 +60,11 @@ public class Planet : MonoBehaviour
             Init(5);
         }
         //TODO handle when a player disconnects or leaves the room
-        if (RB != null && RB.Length > 0)
+        if (RB != null && RB.Count > 0)
         {
             foreach (Rigidbody rb in RB)
             {
+                //print("gravitying " + rb.gameObject.name);
                 Vector3 force = transform.position - rb.transform.position;
                 force = force.normalized * 3f;
                 rb.AddForce(force);
@@ -89,5 +89,15 @@ public class Planet : MonoBehaviour
         }
 
         //p.transform.rotation = Quaternion.LookRotation()
+    }
+
+    public void AddRigidbody(Rigidbody rb)
+    {
+        RB.Add(rb);
+    }
+
+    public void RemoveRigidbody(Rigidbody rb)
+    {
+        RB.Remove(rb);
     }
 }

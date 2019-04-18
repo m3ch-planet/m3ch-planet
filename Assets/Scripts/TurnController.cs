@@ -15,6 +15,7 @@ public class TurnController : NetworkBehaviour
     int TimeLeftInTurn;
     int TurnStartTime; //time when the current turn started
     bool Walking;
+    public bool Shooting;
 
     //Player Network Variables
     Vector3 TargetLocalPos;
@@ -39,6 +40,7 @@ public class TurnController : NetworkBehaviour
         currentPlayer = -1;
         TurnStartTime = -1;
         HasEnergy = true;
+        Shooting = false;
     }
 
     public void InitPlayers(LinkedList<PlayerController> PlayersList)
@@ -57,6 +59,7 @@ public class TurnController : NetworkBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        //Make sure that Turn Controller is Init
         if (Players != null && Players.Length > 0)
         {
             //Only update Time Left In Turn if you are the server
@@ -68,7 +71,7 @@ public class TurnController : NetworkBehaviour
             //If there is no time left in turn, then end the turn
             if ((currentPlayer == -1 && isServer) ||
                 TimeLeftInTurn < 0 ||
-                Players[currentPlayer].GetEnergy() < 0) //TODO handle index out of bounds
+                Players[currentPlayer].GetEnergy() < 0)
             {
                 if (HasEnergy)
                 {
@@ -77,35 +80,60 @@ public class TurnController : NetworkBehaviour
             }
             else
             {
-                UI.SetTurnTimeText(TimeLeftInTurn.ToString() + " seconds left");
-                if (Players[currentPlayer]._isLocalPlayer) //TODO handle index out of bounds 
+                if (Shooting)
                 {
-                    if (Walking)
-                    {
-                        HandleWalk();
-                    }
-                    else
-                    {
-                        Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 2;
-                    }
-                    AlignPlayerWithCamera();
-                    //if is local player then send position to other clients via server
-                    Players[currentPlayer].CmdSendPlayerTransform(
-                        Players[currentPlayer].transform.localPosition,
-                        Players[currentPlayer].transform.localRotation,
-                        Players[currentPlayer].GetPlayerName()
-                        );
+                    //Player just threw grenade
+                    UI.SetTurnTime(false);
+                    UI.SetPlayerTurnPanel(false);
                 }
                 else
                 {
-                    SyncCurrentPlayerTransform();
+                    //Player has now thrown grenade this turn (walking, standing).
+                    UI.SetTurnTimeText(TimeLeftInTurn.ToString() + " seconds left");
                 }
-                SpinPlanetToPlayer();
+                HandleSyncTransforms();
             }
         }
     }
 
-    #region Networking
+
+    #region Networking & Transformations
+    void HandleSyncTransforms()
+    {
+        if (Players[currentPlayer]._isLocalPlayer)
+        {
+            if (Walking)
+            {
+                HandleWalk();
+            }
+            else
+            {
+                Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 2;
+            }
+            AlignPlayerWithCamera();
+            //if is local player then send position to other clients via server
+            Players[currentPlayer].CmdSendPlayerTransform(
+                Players[currentPlayer].transform.localPosition,
+                Players[currentPlayer].transform.localRotation,
+                Players[currentPlayer].GetPlayerName()
+                );
+        }
+        else
+        {
+            SyncCurrentPlayerTransform();
+        }
+        SpinPlanetToPlayer();
+    }
+
+    void HandleWalk()
+    {
+        Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 10f;
+        Players[currentPlayer].transform.position = Players[currentPlayer].transform.position + GetCurrentPlayerForward() * Time.deltaTime;
+        Players[currentPlayer].CmdDecreaseEnergy();
+        //Straighten the player
+        AssetManager.Instance.Get("Planet").GetComponent<Planet>().ClampPlayerUpright(Players[currentPlayer]);
+    }
+
     public void UpdatePlayerNetworkTransforms(Vector3 localPos, Quaternion localRot, string PlayerName)
     {
         TargetLocalPos = localPos;
@@ -141,7 +169,6 @@ public class TurnController : NetworkBehaviour
                 );
         }
     }
-    #endregion
 
     void SpinPlanetToPlayer()
     {
@@ -151,6 +178,7 @@ public class TurnController : NetworkBehaviour
         Quaternion target = Quaternion.FromToRotation(n, Vector3.up) * original;
         planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 2);
     }
+    #endregion
 
     //returns time in terms of seconds
     private int CurrentTime()
@@ -185,12 +213,12 @@ public class TurnController : NetworkBehaviour
 
     public void DoEndTurn(int curPlayer, int TimeStartTurn)
     {
-        print("doing end turn " + curPlayer);
         //Start Next Player's Turn
         currentPlayer = curPlayer;
         TurnStartTime = TimeStartTurn;
         HasEnergy = true;
         Walking = false;
+        Shooting = false;
         PlayerController currentPlayerController = Players[currentPlayer];
         if (currentPlayerController == GC.GetLocalPlayer())
         {
@@ -202,16 +230,9 @@ public class TurnController : NetworkBehaviour
             UI.SetTurnText(currentPlayerController.GetPlayerName() + "'s Turn");
             UI.SetPlayerTurnPanel(false);
         }
+        UI.SetTurnTime(true);
     }
 
-    void HandleWalk()
-    {
-        Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 10f;
-        Players[currentPlayer].transform.position = Players[currentPlayer].transform.position + GetCurrentPlayerForward() * Time.deltaTime;
-        Players[currentPlayer].CmdDecreaseEnergy();
-        //Straighten the player
-        AssetManager.Instance.Get("Planet").GetComponent<Planet>().ClampPlayerUpright(Players[currentPlayer]);
-    }
 
     void AlignPlayerWithCamera()
     {
@@ -225,7 +246,6 @@ public class TurnController : NetworkBehaviour
             GetCurrentPlayerUp());
         right.Normalize();
         Vector3 forward = Vector3.Cross(GetCurrentPlayerUp(), right);
-        print(forward.normalized);
         return forward.normalized;
     }
 
@@ -247,8 +267,7 @@ public class TurnController : NetworkBehaviour
 
     public void Attack()
     {
-        //TODO
-        print("Attacking");
+        Players[currentPlayer].CmdShoot();
     }
 
     public PlayerController GetCurrentPlayer()
