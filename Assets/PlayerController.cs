@@ -44,7 +44,10 @@ public class PlayerController : NetworkBehaviour
     Slider HealthBarSlider;
     Slider EnergyBarSlider;
     public TextMeshProUGUI ReadyText;
-    
+
+    //Shooting
+    public GameObject ShootingPoint;
+
     private void Awake()
     {
         currentHealth = maxHealth;
@@ -148,6 +151,33 @@ public class PlayerController : NetworkBehaviour
     {
         return PlayerName;
     }
+
+    #region Shooting
+    [Command]
+    public void CmdShoot()
+    {
+        //spawn grenade.
+        GameObject Grenade = Instantiate(AM.Get("Grenade"));
+        NetworkServer.Spawn(Grenade);
+        Grenade.gameObject.name = "Grenade " + Grenade.GetComponent<NetworkIdentity>().netId.ToString();
+        RpcShoot(Grenade);
+    }
+
+    [ClientRpc]
+    public void RpcShoot(GameObject Grenade)
+    {
+        GameObject Planet = AM.Get("Planet");
+        Planet.GetComponent<Planet>().AddRigidbody(Grenade.GetComponent<Rigidbody>());
+        Grenade.transform.parent = Planet.transform;
+        Grenade.transform.position = TC.GetCurrentPlayer().ShootingPoint.transform.position;
+        Vector3 F = TC.GetCurrentPlayer().transform.forward;
+        Vector3 n = TC.GetCurrentPlayer().transform.position - Planet.transform.position;
+        n.Normalize();
+        F = F + n;
+        F = F * 60f;
+        Grenade.GetComponent<Grenade>().Throw(F);
+    }
+    #endregion
 
     #region Game Initializers
     //Tells server to start game

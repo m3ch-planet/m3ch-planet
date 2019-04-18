@@ -246,8 +246,7 @@ public class TurnController : NetworkBehaviour
 
     public void Attack()
     {
-        //TODO
-        print("Attacking");
+        Players[currentPlayer].CmdShoot();
     }
 
     public PlayerController GetCurrentPlayer()
