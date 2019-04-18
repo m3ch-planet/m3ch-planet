@@ -39,7 +39,7 @@ public class UIController : MonoBehaviour
         // Set up event handlers
         GameObject.Find("My Profile").GetComponent<Button>().onClick.AddListener(() =>
         {
-            EnableJoinMenu(true);
+            EnableMyProfile(true);
             EnableStartMenu(false);
         });
 
