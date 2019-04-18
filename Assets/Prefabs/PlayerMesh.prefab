@@ -396,6 +396,36 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!1 &619563588945895574
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2166908555752664953}
+  m_Layer: 0
+  m_Name: ThrowingPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2166908555752664953
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 619563588945895574}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.4, z: 0.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2065015766367231785}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &831967191118558689
 GameObject:
   m_ObjectHideFlags: 0
@@ -2236,6 +2266,7 @@ Transform:
   - {fileID: 2065240299446324267}
   - {fileID: 2069271983900010851}
   - {fileID: 2068972857986204413}
+  - {fileID: 2166908555752664953}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2318,6 +2349,7 @@ MonoBehaviour:
   HealthBar: {fileID: 436107673009907614}
   EnergyBar: {fileID: 8700015607211781329}
   ReadyText: {fileID: 5610103024058069665}
+  ShootingPoint: {fileID: 619563588945895574}
 --- !u!114 &1266061020169274252
 MonoBehaviour:
   m_ObjectHideFlags: 0

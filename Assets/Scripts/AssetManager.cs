@@ -7,6 +7,7 @@ public class AssetManager : MonoBehaviour
     //Design of this class follows Singleton Design pattern
     public GameObject PlanetPrefab;
     public GameObject GroundImageTarget;
+    public GameObject Grenade;
 
     public static AssetManager Instance;
 
@@ -23,6 +24,8 @@ public class AssetManager : MonoBehaviour
                 return PlanetPrefab;
             case "GroundImageTarget":
                 return GroundImageTarget;
+            case "Grenade":
+                return Grenade;
             default:
                 return null;
         }

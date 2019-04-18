@@ -12,7 +12,7 @@ public class PlayerController : NetworkBehaviour
     int maxHealth = 100;
     float maxEnergy = 100f;
     [SyncVar]
-    int currentHealth;
+    float currentHealth;
     [SyncVar]
     float currentEnergy;
 
@@ -44,7 +44,10 @@ public class PlayerController : NetworkBehaviour
     Slider HealthBarSlider;
     Slider EnergyBarSlider;
     public TextMeshProUGUI ReadyText;
-    
+
+    //Shooting
+    public GameObject ShootingPoint;
+
     private void Awake()
     {
         currentHealth = maxHealth;
@@ -75,7 +78,8 @@ public class PlayerController : NetworkBehaviour
         PlayerNameText.GetComponent<TextMeshProUGUI>().text = PlayerName;
     }
 
-    public void TakeDamage(int _amt)
+    [Command]
+    public void CmdTakeDamage(float _amt)
     {
         currentHealth -= _amt;
     }
@@ -101,7 +105,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         PlayerUICanvas.transform.LookAt(Camera.main.transform);
-        HealthBarSlider.value = Mathf.Lerp(HealthBarSlider.value, (float)currentHealth / 100, Time.deltaTime*6);
+        HealthBarSlider.value = Mathf.Lerp(HealthBarSlider.value, currentHealth / 100, Time.deltaTime*6);
         EnergyBarSlider.value = Mathf.Lerp(EnergyBarSlider.value, currentEnergy / 100, Time.deltaTime*6); 
     }
 
@@ -149,6 +153,35 @@ public class PlayerController : NetworkBehaviour
     {
         return PlayerName;
     }
+
+    #region Shooting
+    [Command]
+    public void CmdShoot()
+    {
+        //spawn grenade.
+        GameObject Grenade = Instantiate(AM.Get("Grenade"));
+        NetworkServer.Spawn(Grenade);
+        Grenade.gameObject.name = "Grenade " + Grenade.GetComponent<NetworkIdentity>().netId.ToString();
+        RpcShoot(Grenade);
+    }
+
+    [ClientRpc]
+    public void RpcShoot(GameObject Grenade)
+    {
+        GameObject Planet = AM.Get("Planet");
+        Planet.GetComponent<Planet>().AddRigidbody(Grenade.GetComponent<Rigidbody>());
+        Grenade.transform.parent = Planet.transform;
+        Grenade.transform.position = TC.GetCurrentPlayer().ShootingPoint.transform.position;
+        Vector3 F = TC.GetCurrentPlayer().transform.forward;
+        Vector3 n = TC.GetCurrentPlayer().transform.position - Planet.transform.position;
+        n.Normalize();
+        F = F + n;
+        F = F * 60f;
+        Grenade.GetComponent<Grenade>().Throw(F);
+        TC.Shooting = true;
+        print("Set Shooting to " + TC.Shooting);
+    }
+    #endregion
 
     #region Game Initializers
     //Tells server to start game

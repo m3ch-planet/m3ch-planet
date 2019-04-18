@@ -59,7 +59,6 @@ public class PlayerNetworkSetup : NetworkBehaviour
     [Command]
     private void CmdInitPlayerName(string name,string _PlayerID)
     {
-        Debug.Log("Command Initing Player Name: " + name);
         GC.InitPlayerName(name, _PlayerID);
     }
 }

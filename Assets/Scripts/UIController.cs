@@ -129,4 +129,9 @@ public class UIController : MonoBehaviour
     {
         PlayerTurnPanel.SetActive(active);
     }
+
+    public void SetTurnTime(bool active)
+    {
+        TurnTimeText.gameObject.SetActive(active);
+    }
 }
