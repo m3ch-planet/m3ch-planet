@@ -38,7 +38,6 @@ public class TurnController : NetworkBehaviour
         UI = GC.gameObject.GetComponent<UIController>();
         currentPlayer = -1;
         TurnStartTime = -1;
-        UI.SetTurnPanel(false);
         HasEnergy = true;
     }
 
