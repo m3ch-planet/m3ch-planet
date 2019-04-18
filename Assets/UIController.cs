@@ -38,6 +38,11 @@ public class UIController : MonoBehaviour
         TurnTimeText.text = s;
     }
 
+    public void SetTurnTime(bool active)
+    {
+        TurnTimeText.gameObject.SetActive(active);
+    }
+
     public void SetPlayerTurnPanel(bool active)
     {
         PlayerTurnPanel.SetActive(active);

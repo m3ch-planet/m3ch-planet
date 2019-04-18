@@ -12,7 +12,7 @@ public class PlayerController : NetworkBehaviour
     int maxHealth = 100;
     float maxEnergy = 100f;
     [SyncVar]
-    int currentHealth;
+    float currentHealth;
     [SyncVar]
     float currentEnergy;
 
@@ -77,7 +77,8 @@ public class PlayerController : NetworkBehaviour
         PlayerNameText.GetComponent<TextMeshProUGUI>().text = PlayerName;
     }
 
-    public void TakeDamage(int _amt)
+    [Command]
+    public void CmdTakeDamage(float _amt)
     {
         currentHealth -= _amt;
     }
@@ -103,7 +104,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         PlayerUICanvas.transform.LookAt(Camera.main.transform);
-        HealthBarSlider.value = Mathf.Lerp(HealthBarSlider.value, (float)currentHealth / 100, Time.deltaTime*6);
+        HealthBarSlider.value = Mathf.Lerp(HealthBarSlider.value, currentHealth / 100, Time.deltaTime*6);
         EnergyBarSlider.value = Mathf.Lerp(EnergyBarSlider.value, currentEnergy / 100, Time.deltaTime*6); 
     }
 
