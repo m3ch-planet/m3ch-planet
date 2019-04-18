@@ -177,6 +177,8 @@ public class PlayerController : NetworkBehaviour
         F = F + n;
         F = F * 60f;
         Grenade.GetComponent<Grenade>().Throw(F);
+        TC.Shooting = true;
+        print("Set Shooting to " + TC.Shooting);
     }
     #endregion
 
