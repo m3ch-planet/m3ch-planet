@@ -12,9 +12,10 @@ public class StartMenuUIHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartMenu();
+        //StartMenu();
         if (PlayerPrefs.GetString("PlayerName") != "")
             PlayerNameInputPlaceHolder.GetComponent<Text>().text = PlayerPrefs.GetString("PlayerName");
+        GameObject.Find("NameInput").GetComponent<InputField>().onEndEdit.AddListener(ChangeName);
     }
 
     // Update is called once per frame
