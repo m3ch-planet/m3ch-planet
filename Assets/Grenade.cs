@@ -13,7 +13,6 @@ public class Grenade : MonoBehaviour
 
     public void Throw(Vector3 F)
     {
-        print("Throwing " + F);
         GetComponent<Rigidbody>().AddForce(F);
         Invoke("Explode", 5);
     }
