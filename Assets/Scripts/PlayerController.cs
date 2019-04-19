@@ -62,8 +62,7 @@ public class PlayerController : NetworkBehaviour
         GC = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         d = GC.GetComponent<ARDebugger>();
         AM = GC.GetComponent<AssetManager>();
-        TC = GameObject.Find("TurnController").GetComponent<TurnController>();
-        //TC = GC.GetComponent<TurnController>();
+        TC = GameObject.FindGameObjectWithTag("TurnController").GetComponent<TurnController>();
         prevReady = false;
         PlayerUICanvas = PlayerNameText.transform.parent.gameObject;
         PlayerUICanvas.GetComponent<Canvas>().worldCamera = Camera.main;

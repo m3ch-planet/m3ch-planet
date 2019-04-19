@@ -31,14 +31,14 @@ public class Grenade : MonoBehaviour
         //Remove from planet list
         Planet.GetComponent<Planet>().RemoveRigidbody(GetComponent<Rigidbody>());
         //Damage to players
-        PlayerController[] Players = GC.GetComponent<TurnController>().GetPlayers();
+        PlayerController[] Players = GameObject.FindGameObjectWithTag("TurnController").GetComponent<TurnController>().GetPlayers();
         foreach(PlayerController p in Players)
         {
             float distance = Vector3.Distance(p.transform.position, transform.position);
             float damage = Mathf.Max(0,DAMAGE * (1 - distance / RANGE));
             p.CmdTakeDamage(damage);
         }
-        GC.GetComponent<TurnController>().EndTurn();
+        GameObject.FindGameObjectWithTag("TurnController").GetComponent<TurnController>().EndTurn();
         Destroy(gameObject);
     }
 }

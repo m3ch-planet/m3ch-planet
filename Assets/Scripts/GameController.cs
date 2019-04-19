@@ -98,8 +98,7 @@ public class GameController : MonoBehaviour
     {
         UI.SetWaitRoomPanel(false);
         GameHappening = true;
-        GameObject.Find("TurnController").GetComponent<TurnController>().InitPlayers(PlayersList);
-        //GetComponent<TurnController>().InitPlayers(PlayersList);
+        GameObject.FindGameObjectWithTag("TurnController").GetComponent<TurnController>().InitPlayers(PlayersList);
     }
 
     void StopGame()

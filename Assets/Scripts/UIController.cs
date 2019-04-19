@@ -6,17 +6,27 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
+    [SerializeField]
     GameObject WaitRoomPanel;
+    [SerializeField]
     GameObject TurnPanel;
+    [SerializeField]
     GameObject PlayerTurnPanel;
+    [SerializeField]
     TextMeshProUGUI TurnText;
+    [SerializeField]
     TextMeshProUGUI TurnTimeText;
 
+    [SerializeField]
     GameObject StartMenu;
+    [SerializeField]
     GameObject JoinMenu;
+    [SerializeField]
     GameObject HostMenu;
 
+    [SerializeField]
     GameObject MyProfile;
+    [SerializeField]
     GameObject Background;
 
     private void Init()
