@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.43667588, g: 0.48427194, b: 0.564524, a: 1}
+  m_IndirectSpecularColor: {r: 0.43667564, g: 0.48427135, b: 0.5645232, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -750,7 +750,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000012551, y: 0.000007672022}
+  m_AnchoredPosition: {x: -0.000012551, y: -0.000020738633}
   m_SizeDelta: {x: 0.000015259, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &131051858
@@ -882,7 +882,7 @@ GameObject:
   - component: {fileID: 210779946}
   m_Layer: 0
   m_Name: TurnController
-  m_TagString: GameController
+  m_TagString: TurnController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -932,6 +932,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 174142af8aa726e479ca6e6eceb191d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Shooting: 0
 --- !u!4 &210779952
 Transform:
   m_ObjectHideFlags: 0
@@ -1875,7 +1876,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 210779947}
         m_MethodName: Attack
         m_Mode: 1
         m_Arguments:
@@ -3226,7 +3227,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 210779947}
         m_MethodName: EndTurn
         m_Mode: 1
         m_Arguments:
@@ -3572,7 +3573,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1649155796}
   m_HandleRect: {fileID: 1649155795}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3813,6 +3814,7 @@ MonoBehaviour:
   - {fileID: 127511594845128344, guid: e037220668bbad144a7c2048caf4f22f, type: 3}
   - {fileID: 826295454717296812, guid: 8970c9bf4a53508498f2b0f52393ab9b, type: 3}
   - {fileID: 1829303437832368197, guid: d4c7927d7287cf24e98335e8cda0a4aa, type: 3}
+  - {fileID: 4168795892801131352, guid: d91a7ba543b499043bd2d00b09ded734, type: 3}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:
@@ -7108,6 +7110,7 @@ MonoBehaviour:
   PlanetPrefab: {fileID: 826295454717296812, guid: 8970c9bf4a53508498f2b0f52393ab9b,
     type: 3}
   GroundImageTarget: {fileID: 309096837}
+  Grenade: {fileID: 4168795892801131352, guid: d91a7ba543b499043bd2d00b09ded734, type: 3}
 --- !u!114 &1821070817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7117,7 +7120,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1821070813}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc37caf955e17aa49a111a150c48ce64, type: 3}
+  m_Script: {fileID: 11500000, guid: b4e3dc02c3fd58449a59dd87ffd45038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1821070818
