@@ -750,7 +750,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000012551, y: -0.000008477722}
+  m_AnchoredPosition: {x: -0.000012551, y: -0.0000493738}
   m_SizeDelta: {x: 0.000015259, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &131051858
@@ -882,7 +882,7 @@ GameObject:
   - component: {fileID: 210779946}
   m_Layer: 0
   m_Name: TurnController
-  m_TagString: GameController
+  m_TagString: TurnController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7109,7 +7109,7 @@ MonoBehaviour:
   PlanetPrefab: {fileID: 826295454717296812, guid: 8970c9bf4a53508498f2b0f52393ab9b,
     type: 3}
   GroundImageTarget: {fileID: 309096837}
-  Grenade: {fileID: 0}
+  Grenade: {fileID: 4168795892801131352, guid: d91a7ba543b499043bd2d00b09ded734, type: 3}
 --- !u!114 &1821070817
 MonoBehaviour:
   m_ObjectHideFlags: 0
