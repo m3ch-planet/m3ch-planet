@@ -69,7 +69,7 @@ public class TurnController : NetworkBehaviour
             }
             //If there is no current player, then init current player
             //If there is no time left in turn, then end the turn
-            if ((currentPlayer == -1 && isServer) ||
+            if ((currentPlayer == -1) ||
                 TimeLeftInTurn < 0 ||
                 Players[currentPlayer].GetEnergy() < 0)
             {
