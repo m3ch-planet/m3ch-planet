@@ -26,6 +26,7 @@ public class UIController : MonoBehaviour
         JoinMenu = GameObject.Find("JoinMenu");
         HostMenu = GameObject.Find("HostMenu");
 
+
         WaitRoomPanel = GameObject.Find("WaitRoomPanel");
         TurnPanel = GameObject.Find("TurnPanel");
         PlayerTurnPanel = GameObject.Find("PlayerTurnPanel");
