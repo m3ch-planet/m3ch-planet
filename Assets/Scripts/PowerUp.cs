@@ -63,6 +63,9 @@ public class PowerUp : MonoBehaviour
                     player.CmdChangeHealth(30);
                     break;
                 default:
+                    // If user's inventory is full, do not add to inventory
+                    if (TC.GetCurrentPlayer().GetInventory().Count < 2)
+                        return;
                     TC.GetCurrentPlayer().CmdAddToInventory(this);
                     break;
             }
