@@ -2,7 +2,7 @@
 
 ## Getting Started
 Preparing the Image Target
-This game supports up to 4 people at maximum. Before starting the game, all players should have the following image targets at hand:
+This game supports up to 4 people at maximum. Before starting the game, all players should have the following image targets at hand (found in the README_Assets folder):
 
 ### Battle Arena Image Target
 
