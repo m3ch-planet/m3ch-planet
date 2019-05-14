@@ -12,7 +12,6 @@ public class Planet : MonoBehaviour
     ARDebugger d;
     AssetManager AM;
     int NUMBER_OF_POWERUPS = 20;
-    public int seed = 10;
 
 
     //Player Book Keeping
@@ -39,6 +38,8 @@ public class Planet : MonoBehaviour
             rb.useGravity = false;
             PCs[i].SetReadyText(false);
         }
+        Debug.Log("Seed is " + InitSeed);
+
         Random.seed = InitSeed;
         foreach (PlayerController Player in PCs)
         {
@@ -104,7 +105,8 @@ public class Planet : MonoBehaviour
 
             GameObject PowerUp = Instantiate(prefab, randomPos, Quaternion.identity);
             PowerUp.GetComponent<PowerUp>().SetPowerUpType(type);
-            NetworkServer.Spawn(PowerUp);
+
+            //NetworkServer.Spawn(PowerUp);
 
             // TODO: Randomly assign power up category by setting the appropriate tag
             // First do wayfinding before this
@@ -120,8 +122,7 @@ public class Planet : MonoBehaviour
     {
         if (!init && TC.GetPlayers().Length > 0)
         {
-            Debug.Log("Seed is " + seed);
-            Init(seed);
+            Init(10);
         }
         //TODO handle when a player disconnects or leaves the room
         if (RB != null && RB.Count > 0)
