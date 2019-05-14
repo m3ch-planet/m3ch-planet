@@ -12,6 +12,11 @@ public class UIController : MonoBehaviour
     TextMeshProUGUI TurnText;
     TextMeshProUGUI TurnTimeText;
     GameObject UseItemBtn;
+    GameObject WalkBtn;
+    GameObject TeleportBtn;
+    GameObject AttackBtn;
+    GameObject EndTurnBtn;
+
 
     GameObject StartMenu;
     GameObject JoinMenu;
@@ -37,6 +42,10 @@ public class UIController : MonoBehaviour
         JoinMenu = GameObject.Find("JoinMenu");
         HostMenu = GameObject.Find("HostMenu");
         UseItemBtn = GameObject.Find("UseItem");
+        WalkBtn = GameObject.Find("Walk");
+        TeleportBtn = GameObject.Find("Teleport");
+        AttackBtn = GameObject.Find("Attack"); 
+        EndTurnBtn = GameObject.Find("End Turn");
 
 
         WaitRoomPanel = GameObject.Find("WaitRoomPanel");
@@ -69,6 +78,23 @@ public class UIController : MonoBehaviour
 
     }
 
+    public void EnableTeleportBtn(bool active)
+    {
+        if (active)
+        {
+            TeleportBtn.SetActive(true);
+            WalkBtn.SetActive(false);
+            AttackBtn.SetActive(false);
+            EndTurnBtn.SetActive(false);
+        }
+        else
+        {
+            TeleportBtn.SetActive(false);
+            WalkBtn.SetActive(true);
+            AttackBtn.SetActive(true);
+            EndTurnBtn.SetActive(true);
+        }
+    }
     public void EnableUseItemBtn(bool active)
     {
         UseItemBtn.SetActive(active);
@@ -94,6 +120,7 @@ public class UIController : MonoBehaviour
         WaitRoomPanel.SetActive(false);
         TurnPanel.SetActive(false);
         EnableUseItemBtn(false);
+        EnableTeleportBtn(false);
         PlayerTurnPanel.SetActive(false);
     }
 

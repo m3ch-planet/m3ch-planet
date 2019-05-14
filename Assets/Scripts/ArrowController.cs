@@ -21,6 +21,8 @@ public class ArrowController : MonoBehaviour
     LineRenderer arrow;
     PlayerController LocalPlayer;
 
+    bool isTeleporting = false;
+
     GameObject selectedItem;
 
     void Start()
@@ -78,7 +80,46 @@ public class ArrowController : MonoBehaviour
             arrow.startWidth = 0.05f;
             arrow.endWidth = 0.05f;
         }
-	}
+
+        if (isTeleporting)
+        {
+            float rayLength = 5f;
+            arrow.enabled = true;
+            ArrowTail = transform.position;
+            ArrowHead = ArrowTail + rayLength * transform.up;
+
+            RaycastHit hit;
+            if (Physics.Raycast(ArrowTail, transform.TransformDirection(Vector3.up), out hit, rayLength))
+            {
+                ArrowHead = ArrowTail + hit.distance * transform.up;
+            }
+            arrow.SetPositions(new Vector3[] { ArrowTail, ArrowHead });
+            arrow.startWidth = 0.05f;
+            arrow.endWidth = 0.05f;
+
+
+        }
+    }
+
+    public void Teleport()
+    {
+        // If the wand ray hits an object, then teleport
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.up), out hit, 5f))
+        {
+            GC.GetLocalPlayer().gameObject.transform.position = transform.position + hit.distance * transform.up;
+            AssetManager.Instance.Get("Planet").GetComponent<Planet>().ClampPlayerUpright(GC.GetLocalPlayer());
+            GC.GetLocalPlayer().CmdSendPlayerTransform(
+                GC.GetLocalPlayer().transform.localPosition,
+                GC.GetLocalPlayer().transform.localRotation,
+                GC.GetLocalPlayer().GetPlayerName()
+            );
+            UI.EnableTeleportBtn(false);
+            isTeleporting = false;
+            arrow.enabled = false;
+        }
+    }
+
 
     public bool GetAttackButtonDown()
     {
@@ -113,6 +154,8 @@ public class ArrowController : MonoBehaviour
         }
     }
 
+
+
     public void ConsumeItem()
     {
         if (selectedItem != null)
@@ -126,6 +169,8 @@ public class ArrowController : MonoBehaviour
                     GC.GetLocalPlayer().CmdSetDoubleDmg(true);
                     break;
                 case "PowerupTeleport":
+                    isTeleporting = true;
+                    UI.EnableTeleportBtn(true);
                     break;
             }
 
