@@ -129,10 +129,12 @@ public class Planet : MonoBehaviour
         {
             foreach (Rigidbody rb in RB)
             {
-                //print("gravitying " + rb.gameObject.name);
-                Vector3 force = transform.position - rb.transform.position;
-                force = force.normalized * 3f;
-                rb.AddForce(force);
+                if (rb != null) {
+                    //print("gravitying " + rb.gameObject.name);
+                    Vector3 force = transform.position - rb.transform.position;
+                    force = force.normalized * 3f;
+                    rb.AddForce(force);
+                }
             }
         }
     }
