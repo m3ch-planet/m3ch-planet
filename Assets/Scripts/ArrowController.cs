@@ -6,6 +6,7 @@ public class ArrowController : MonoBehaviour
 {
 	TurnController TC;
 	GameController GC;
+    UIController UI;
 
 	const float PERCENT_ARROW_HEAD = 0.1f; // Percent of the arrow that makes up the tip
 	const float ARROW_HEAD_WIDTH = 0.8f; // Default width of the arrow
@@ -19,9 +20,14 @@ public class ArrowController : MonoBehaviour
     Vector3 ArrowTail;
     LineRenderer arrow;
     PlayerController LocalPlayer;
+
+    GameObject selectedItem;
+
     void Start()
 	{
 		GC = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        UI = GameObject.FindGameObjectWithTag("GameController").GetComponent<UIController>();
+
         TC = null;
 		arrow = GetComponent<LineRenderer>();
         if (arrow == null)
@@ -87,5 +93,45 @@ public class ArrowController : MonoBehaviour
     public Vector3 GetArrowTail()
     {
         return ArrowTail;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("InventoryItem"))
+        {
+            UI.EnableUseItemBtn(true);
+            selectedItem = other.gameObject;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("InventoryItem"))
+        {
+            UI.EnableUseItemBtn(false);
+            selectedItem = null;
+        }
+    }
+
+    public void ConsumeItem()
+    {
+        if (selectedItem != null)
+        {
+            Debug.Log(selectedItem.GetComponent<PowerUp>().GetPowerUpType());
+            switch (selectedItem.GetComponent<PowerUp>().GetPowerUpType()) {
+                case "PowerupShield":
+                    GC.GetLocalPlayer().CmdSetShield(true);
+                    break;
+                case "PowerupDamage":
+                    GC.GetLocalPlayer().CmdSetDoubleDmg(true);
+                    break;
+                case "PowerupTeleport":
+                    break;
+            }
+
+            UI.EnableUseItemBtn(false);
+            Destroy(selectedItem);
+            selectedItem = null;
+        }
     }
 }

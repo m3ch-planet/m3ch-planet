@@ -20,11 +20,14 @@ public class Inventory : MonoBehaviour
         AM = GameObject.FindGameObjectWithTag("GameController").GetComponent<AssetManager>();
     }
 
-    void AddToInventory(GameObject prefab, GameObject parent)
+    void AddToInventory(GameObject prefab, GameObject parent, global::PowerUp.PowerUpType type)
     {
         GameObject obj = Instantiate(prefab, parent.transform);
         obj.transform.localScale = new Vector3(1, 1, 1);
         obj.tag = "InventoryItem";
+        obj.AddComponent<Rigidbody>();
+        obj.GetComponent<Rigidbody>().isKinematic = true;
+        obj.GetComponent<PowerUp>().SetPowerUpType(type);
     }
 
     // Update is called once per frame
@@ -47,7 +50,7 @@ public class Inventory : MonoBehaviour
                 PowerUp item1 = inventory[0];
                 GameObject prefab = AM.Get(item1.GetPowerUpType());
                 GameObject parent = GameObject.Find("Item1");
-                AddToInventory(prefab, parent);
+                AddToInventory(prefab, parent, item1.GetPowerUpTypeEnum());
                 hasItem1 = true;
             }
             if (!hasItem2 && inventory.Count > 1)
@@ -55,7 +58,7 @@ public class Inventory : MonoBehaviour
                 PowerUp item2 = inventory[1];
                 GameObject prefab = AM.Get(item2.GetPowerUpType());
                 GameObject parent = GameObject.Find("Item2");
-                AddToInventory(prefab, parent);
+                AddToInventory(prefab, parent, item2.GetPowerUpTypeEnum());
                 hasItem2 = true;
             }
         }
