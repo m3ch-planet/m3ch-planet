@@ -95,17 +95,17 @@ public class Planet : MonoBehaviour
     {
         Vector3 n = (p.transform.position - transform.position).normalized;
         //Align Player's rotation to planet's normal
-        RaycastHit hit;
-        if (Physics.Raycast(
-            p.transform.position, //Shoot a ray from player's position
-            -n,  //in the direction from the player to the planet
-            out hit, //store the ray hit in hit
-            Mathf.Infinity, //no limit to distance
-            1 << 9) //only detect objects in layer 9 (Planet)
-            )
-        {
-            p.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-        }
+        //RaycastHit hit;
+        //if (Physics.Raycast(
+        //    p.transform.position, //Shoot a ray from player's position
+        //    -n,  //in the direction from the player to the planet
+        //    out hit, //store the ray hit in hit
+        //    Mathf.Infinity, //no limit to distance
+        //    1 << 9) //only detect objects in layer 9 (Planet)
+        //    )
+        //{
+        p.transform.rotation = Quaternion.FromToRotation(Vector3.up, n);
+        //}
 
         //p.transform.rotation = Quaternion.LookRotation()
     }
