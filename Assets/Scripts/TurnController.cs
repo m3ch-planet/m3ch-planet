@@ -28,8 +28,11 @@ public class TurnController : NetworkBehaviour
 
     //Other Game Variables
     GameController GC;
+    AssetManager AM;
     ARDebugger d;
     UIController UI;
+
+    public int NUMBER_OF_POWERUPS;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +40,7 @@ public class TurnController : NetworkBehaviour
         GC = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         d = GC.gameObject.GetComponent<ARDebugger>();
         UI = GC.gameObject.GetComponent<UIController>();
+        AM = AssetManager.Instance;
         currentPlayer = -1;
         TurnStartTime = -1;
         HasEnergy = true;
@@ -276,5 +280,27 @@ public class TurnController : NetworkBehaviour
             return Players[currentPlayer];
         else
             return null;
+    }
+
+    [Command]
+    public void CmdInitPowerUps(GameObject Planet)
+    {
+        print("Spawning powerups...");
+        // For loop of Instantiate and spawning
+        for (int i = 0; i < NUMBER_OF_POWERUPS; i++)
+        {
+            Vector3 randomPos = (UnityEngine.Random.onUnitSphere * 1.5f) + Planet.transform.position;
+            GameObject PowerUp = Instantiate(AM.Get("HealthPack"), randomPos, Quaternion.identity);
+            PowerUp.GetComponent<PowerUp>().SetPowerUpType(global::PowerUp.PowerUpType.HEALTH);
+            NetworkServer.Spawn(PowerUp);
+            //PowerUp.gameObject.name = "PowerUp " + PowerUp.GetComponent<NetworkIdentity>().netId.ToString();
+
+            // TODO: Randomly assign power up category by setting the appropriate tag
+            // First do wayfinding before this
+
+            // Set parent of powerups to planet
+            PowerUp.transform.parent = Planet.transform;
+            Planet.GetComponent<Planet>().ClampPowerupUpright(PowerUp);
+        }
     }
 }

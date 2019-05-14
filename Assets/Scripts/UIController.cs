@@ -69,6 +69,7 @@ public class UIController : MonoBehaviour
 
     private void Start()
     {
+        print("Heyy");
         Init();
         EnableStartMenu(true);
 
