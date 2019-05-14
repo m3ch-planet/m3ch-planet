@@ -28,6 +28,10 @@ public class PlayerController : NetworkBehaviour
     GameObject PlayerMesh;
     Animator anim;
 
+    // Powerups
+    bool doubleDmg = true;
+    bool hasShield = true;
+
     //Other Game variables
     GameController GC;
     AssetManager AM;
@@ -81,6 +85,11 @@ public class PlayerController : NetworkBehaviour
     [Command]
     public void CmdTakeDamage(float _amt)
     {
+	if (hasShield) {
+		hasShield = false;
+		return;
+	}
+
         currentHealth -= _amt;
     }
 
@@ -162,11 +171,11 @@ public class PlayerController : NetworkBehaviour
         GameObject Grenade = Instantiate(AM.Get("Grenade"));
         NetworkServer.Spawn(Grenade);
         Grenade.gameObject.name = "Grenade " + Grenade.GetComponent<NetworkIdentity>().netId.ToString();
-        RpcShoot(Grenade, direction);
+        RpcShoot(Grenade, direction, doubleDmg);
     }
 
     [ClientRpc]
-    public void RpcShoot(GameObject Grenade, Vector3 direction)
+    public void RpcShoot(GameObject Grenade, Vector3 direction, bool doubleDmg)
     {
         GameObject Planet = AM.Get("Planet");
         Planet.GetComponent<Planet>().AddRigidbody(Grenade.GetComponent<Rigidbody>());
@@ -177,7 +186,7 @@ public class PlayerController : NetworkBehaviour
         n.Normalize();
         F = F + n;
         F = F * 30f;
-        Grenade.GetComponent<Grenade>().Throw(F);
+        Grenade.GetComponent<Grenade>().Throw(F, doubleDmg);
         TC.Shooting = true;
         print("Set Shooting to " + TC.Shooting);
     }

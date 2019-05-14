@@ -14,16 +14,18 @@ public class Grenade : MonoBehaviour
     {
     }
 
-    public void Throw(Vector3 F)
+    public void Throw(Vector3 F, bool doubleDmg)
     {
         GetComponent<Rigidbody>().AddForce(F);
-        Invoke("Explode", DELAY);
+	StartCoroutine(Explode(doubleDmg, DELAY));
     }
-
-    public void Explode()
+ 
+    public IEnumerator Explode(bool doubleDmg, float delayTime)
     {
-        GameObject TC = GameObject.FindGameObjectWithTag("TurnController");
+	yield return new WaitForSeconds(delayTime);
+
         GameObject Planet = AssetManager.Instance.Get("Planet");
+        GameObject TC = GameObject.FindGameObjectWithTag("TurnController");
         Explosion = Instantiate(Explosion, Planet.transform, true);
         Explosion.transform.localPosition = transform.localPosition;
         Explosion.transform.localScale = Vector3.one * 0.3f;
@@ -35,7 +37,9 @@ public class Grenade : MonoBehaviour
         foreach(PlayerController p in Players)
         {
             float distance = Vector3.Distance(p.transform.position, transform.position);
-            float damage = Mathf.Max(0,DAMAGE * (1 - distance / RANGE));
+            float damage = Mathf.Max(0, DAMAGE * (1 - distance / RANGE));
+	    if (doubleDmg)
+		    damage *= 2;
             p.CmdTakeDamage(damage);
         }
         TC.GetComponent<TurnController>().EndTurn();
