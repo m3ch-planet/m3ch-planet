@@ -52,6 +52,8 @@ public class PlayerController : NetworkBehaviour
     //Shooting
     public GameObject ShootingPoint;
 
+    private List<PowerUp> inventory;
+
     private void Awake()
     {
         currentHealth = maxHealth;
@@ -59,6 +61,8 @@ public class PlayerController : NetworkBehaviour
         //Init Player UI variables
         HealthBarSlider = HealthBar.GetComponent<Slider>();
         EnergyBarSlider = EnergyBar.GetComponent<Slider>();
+
+        inventory = new List<PowerUp>();
     }
 
     private void Start()
@@ -80,6 +84,17 @@ public class PlayerController : NetworkBehaviour
         if (name == "") PlayerName = "Bob";
         else PlayerName = name;
         PlayerNameText.GetComponent<TextMeshProUGUI>().text = PlayerName;
+    }
+
+    public void CmdAddToInventory(PowerUp powerup)
+    {
+        Debug.Log("Adding " + powerup.GetPowerUpType());
+        inventory.Add(powerup);
+    }
+
+    public List<PowerUp> GetInventory()
+    {
+        return inventory;
     }
 
     [Command]
