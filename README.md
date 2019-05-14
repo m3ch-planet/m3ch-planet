@@ -6,13 +6,13 @@ This game supports up to 4 people at maximum. Before starting the game, all play
 
 ### Battle Arena Image Target
 
-![Battle Arena Image Target](README_Assets/battlearena.jpg)
+![Battle Arena Image Target](README_Assets/battlearena.png)
 
 This image target allows the application to load the battle arena for the players. Ensure that this image target is laid on a flat surface and that players can either walk completely around it or lean over on each side. A small table would suffice. 
 
 ### Wand Image Target
 
-![Wand Image Target](README_Assets/wand.jpg)
+![Wand Image Target](README_Assets/wand.png)
 
 This image target allows the player to select power ups. They should hold this in their dominant hand and the mobile phone in the other.
 
