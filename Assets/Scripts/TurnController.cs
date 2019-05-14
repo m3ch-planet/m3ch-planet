@@ -289,9 +289,48 @@ public class TurnController : NetworkBehaviour
         // For loop of Instantiate and spawning
         for (int i = 0; i < NUMBER_OF_POWERUPS; i++)
         {
+
+
             Vector3 randomPos = (UnityEngine.Random.onUnitSphere * 1.5f) + Planet.transform.position;
-            GameObject PowerUp = Instantiate(AM.Get("HealthPack"), randomPos, Quaternion.identity);
-            PowerUp.GetComponent<PowerUp>().SetPowerUpType(global::PowerUp.PowerUpType.HEALTH);
+
+
+            float random = UnityEngine.Random.Range(0f, 1f);
+
+            GameObject prefab = null;
+            global::PowerUp.PowerUpType type;
+
+            if (random <= .3f)
+            {
+                prefab = AM.Get("PowerupHealth");
+                type = global::PowerUp.PowerUpType.HEALTH;
+            }
+            else if (random <= .6f)
+            {
+                prefab = AM.Get("PowerupEnergy");
+                type = global::PowerUp.PowerUpType.ENERGY;
+
+            }
+            else if (random <= .75f)
+            {
+                prefab = AM.Get("PowerupDamage");
+                type = global::PowerUp.PowerUpType.DAMAGE;
+
+            }
+            else if (random <= .9f)
+            {
+                prefab = AM.Get("PowerupShield");
+                type = global::PowerUp.PowerUpType.SHIELD;
+
+            }
+            else
+            {
+                prefab = AM.Get("PowerupTeleport");
+                type = global::PowerUp.PowerUpType.TELEPORT;
+
+            }
+
+            GameObject PowerUp = Instantiate(prefab, randomPos, Quaternion.identity);
+            PowerUp.GetComponent<PowerUp>().SetPowerUpType(type);
             NetworkServer.Spawn(PowerUp);
             //PowerUp.gameObject.name = "PowerUp " + PowerUp.GetComponent<NetworkIdentity>().netId.ToString();
 
