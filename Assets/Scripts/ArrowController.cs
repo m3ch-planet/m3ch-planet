@@ -70,4 +70,9 @@ public class ArrowController : MonoBehaviour
             arrow.endWidth = 0.05f;
         }
 	}
+
+    public bool GetAttackButtonDown()
+    {
+        return AttackDown;
+    }
 }

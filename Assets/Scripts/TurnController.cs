@@ -108,12 +108,14 @@ public class TurnController : NetworkBehaviour
         {
             if (Walking)
             {
+                Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 10f;
                 HandleWalk();
             }
             else
             {
                 Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 2;
             }
+            //Camera up
             AlignPlayerWithCamera();
             //if is local player then send position to other clients via server
             Players[currentPlayer].CmdSendPlayerTransform(
@@ -126,12 +128,18 @@ public class TurnController : NetworkBehaviour
         {
             SyncCurrentPlayerTransform();
         }
-        SpinPlanetToPlayer();
+        if (GameObject.FindGameObjectWithTag("WandHead").GetComponent<ArrowController>().GetAttackButtonDown())
+        {
+            SpinPlanet("To Cam");
+        }
+        else
+        {
+            SpinPlanet("To up");
+        }
     }
 
     void HandleWalk()
     {
-        Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 10f;
         Players[currentPlayer].transform.position = Players[currentPlayer].transform.position + GetCurrentPlayerForward() * Time.deltaTime;
         Players[currentPlayer].CmdDecreaseEnergy();
         //Straighten the player
@@ -151,7 +159,7 @@ public class TurnController : NetworkBehaviour
             TargetLocalPos != null && TargetLocalRot != null && TargetPlayerName != null &&
             Players[currentPlayer].GetPlayerName() == TargetPlayerName)
         {
-            if (Vector3.Distance(Players[currentPlayer].transform.localPosition, TargetLocalPos) > 0.01) //TODO experiment with changing value
+            if (Vector3.Distance(Players[currentPlayer].transform.localPosition, TargetLocalPos) > 0.01) 
             {
                 Walking = true;
                 Players[currentPlayer].transform.localPosition =
@@ -174,13 +182,24 @@ public class TurnController : NetworkBehaviour
         }
     }
 
-    void SpinPlanetToPlayer()
+    void SpinPlanet(string param)
     {
         GameObject planet = AssetManager.Instance.Get("Planet");
         Quaternion original = planet.transform.rotation;
         Vector3 n = Players[currentPlayer].transform.position - planet.transform.position;
-        Quaternion target = Quaternion.FromToRotation(n, Vector3.up) * original;
+        Quaternion target = Quaternion.identity;
+        if (param == "To up")
+        {
+            target = Quaternion.FromToRotation(n, Vector3.up) * original; 
+        }
+        else if(param == "To Cam")
+        {
+            Vector3 PlanetToCamera = (Camera.main.transform.position - planet.transform.position).normalized;
+            target = Quaternion.FromToRotation(n, PlanetToCamera) * original;
+        }
         planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 2);
+        
+        
     }
     #endregion
 
