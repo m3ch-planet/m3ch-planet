@@ -248,7 +248,7 @@ public class PlayerController : NetworkBehaviour
         GameObject Planet = Instantiate(AM.Get("Planet"));
         NetworkServer.Spawn(Planet);
         Planet.gameObject.name = "Planet " + Planet.GetComponent<NetworkIdentity>().netId.ToString();
-        TC.CmdInitPowerUps(Planet);
+        //Planet.GetComponent<Planet>().seed = (int) Time.time;
         RpcStartGame(Planet);
     }   
 
