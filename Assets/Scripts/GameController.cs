@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -13,6 +14,7 @@ public class GameController : MonoBehaviour
 
     //Other Game Variables
     UIController UI;
+    private TurnController TC;
     ARDebugger d;
     private static bool GameHappening; //if GameIsHappening, then no new players can join
 
@@ -26,6 +28,10 @@ public class GameController : MonoBehaviour
     {
         UI = GetComponent<UIController>();
         d = GetComponent<ARDebugger>();
+    }
+
+    void Update() {
+        CmdCheckHealth();
     }
 
     public static PlayerController GetPlayer(string _ID)
@@ -101,6 +107,7 @@ public class GameController : MonoBehaviour
     {
         UI.SetWaitRoomPanel(false);
         GameHappening = true;
+        TC = GameObject.FindWithTag("TurnController").GetComponent<TurnController>();
         GameObject.Find("TurnController").GetComponent<TurnController>().InitPlayers(PlayersList);
         //GetComponent<TurnController>().InitPlayers(PlayersList);
     }
@@ -131,5 +138,32 @@ public class GameController : MonoBehaviour
     public LinkedList<PlayerController> GetPlayersList()
     {
         return PlayersList;
+    }
+    
+    public void CmdCheckHealth() {
+        foreach (KeyValuePair<string, PlayerController> entry in Players) {
+            Debug.Log("players count " + Players.Count);
+            Debug.Log("tcplayers count " + TC.Players.Length);
+            if (entry.Value.GetCurrentHealth() <= 0.0f) {
+                string _ID = entry.Value.GetComponent<NetworkIdentity>().netId.ToString();
+                UnRegisterPlayer("Player " + _ID);
+                TC.Players = TC.Players.Where(val => val != entry.Value).ToArray();
+                Players.Remove("Player" + _ID);
+                PlayersList.Remove(entry.Value);
+
+                if (Players.Count <= 1) {
+                    // this player wins
+                    Debug.Log("is this running?");
+                    UI.SetVictoryPanel(true);
+                    UI.SetTurnPanel(false);
+                    StartCoroutine(RestartGame());
+                }
+            }
+        }
+    }
+    
+    IEnumerator RestartGame() {
+        yield return new WaitForSeconds(5);
+        Application.LoadLevel(Application.loadedLevel);
     }
 }
