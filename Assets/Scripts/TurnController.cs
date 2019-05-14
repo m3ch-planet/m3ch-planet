@@ -25,12 +25,16 @@ public class TurnController : NetworkBehaviour
 
     //Player Variables
     PlayerController[] Players;
+    
 
     //Other Game Variables
     GameController GC;
     AssetManager AM;
     ARDebugger d;
     UIController UI;
+
+    //Attacking variables
+    ArrowController WandHead;
 
     public int NUMBER_OF_POWERUPS;
 
@@ -45,6 +49,7 @@ public class TurnController : NetworkBehaviour
         TurnStartTime = -1;
         HasEnergy = true;
         Shooting = false;
+        WandHead = GameObject.FindGameObjectWithTag("WandHead").GetComponent<ArrowController>();
     }
 
     public void InitPlayers(LinkedList<PlayerController> PlayersList)
@@ -104,17 +109,23 @@ public class TurnController : NetworkBehaviour
     #region Networking & Transformations
     void HandleSyncTransforms()
     {
+        bool Attacking = WandHead.GetAttackButtonDown();
         if (Players[currentPlayer]._isLocalPlayer)
         {
             if (Walking)
             {
+                Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 10f;
                 HandleWalk();
             }
             else
             {
                 Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 2;
             }
-            AlignPlayerWithCamera();
+            //Camera up
+            if (Attacking)
+                AlignPlayerWithArrow(); 
+            else
+                AlignPlayerWithCamera();
             //if is local player then send position to other clients via server
             Players[currentPlayer].CmdSendPlayerTransform(
                 Players[currentPlayer].transform.localPosition,
@@ -126,12 +137,31 @@ public class TurnController : NetworkBehaviour
         {
             SyncCurrentPlayerTransform();
         }
-        SpinPlanetToPlayer();
+        if (Attacking && !Shooting)
+        {
+            //render everything
+            Camera.main.cullingMask = ~(1 << 10);            
+            //follow current player, but spin player towards cam
+            SpinPlanet("To Cam");
+        }
+        else if (!Attacking && !Shooting)
+        {
+            //don't render player ui
+            Camera.main.cullingMask = ~(0);
+            //follow current player, but spin player to top
+            SpinPlanet("To up");
+        }
+        else if(!Attacking && Shooting)
+        {
+            //render everything
+            Camera.main.cullingMask = ~(0);
+            //follow grenade
+            SpinPlanet("To Grenade");
+        }
     }
 
     void HandleWalk()
     {
-        Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 10f;
         Players[currentPlayer].transform.position = Players[currentPlayer].transform.position + GetCurrentPlayerForward() * Time.deltaTime;
         Players[currentPlayer].CmdDecreaseEnergy();
         //Straighten the player
@@ -151,7 +181,7 @@ public class TurnController : NetworkBehaviour
             TargetLocalPos != null && TargetLocalRot != null && TargetPlayerName != null &&
             Players[currentPlayer].GetPlayerName() == TargetPlayerName)
         {
-            if (Vector3.Distance(Players[currentPlayer].transform.localPosition, TargetLocalPos) > 0.01) //TODO experiment with changing value
+            if (Vector3.Distance(Players[currentPlayer].transform.localPosition, TargetLocalPos) > 0.01) 
             {
                 Walking = true;
                 Players[currentPlayer].transform.localPosition =
@@ -174,13 +204,30 @@ public class TurnController : NetworkBehaviour
         }
     }
 
-    void SpinPlanetToPlayer()
+    void SpinPlanet(string param)
     {
         GameObject planet = AssetManager.Instance.Get("Planet");
         Quaternion original = planet.transform.rotation;
         Vector3 n = Players[currentPlayer].transform.position - planet.transform.position;
-        Quaternion target = Quaternion.FromToRotation(n, Vector3.up) * original;
-        planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 2);
+        Quaternion target = Quaternion.identity;
+        if (param == "To up")
+        {
+            target = Quaternion.FromToRotation(n, Vector3.up) * original;
+            planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 2);
+        }
+        else if(param == "To Cam")
+        {
+            Vector3 PlanetToCamera = (Camera.main.transform.position - planet.transform.position).normalized;
+            target = Quaternion.FromToRotation(n, PlanetToCamera) * original;
+            planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 2);
+        }
+        else if (param == "To Grenade")
+        {
+            //GameObject Grenade = GameObject.FindGameObjectWithTag("Grenade");
+            //Vector3 PlanetToGrenade = (Grenade.transform.position - planet.transform.position).normalized;
+            //target = Quaternion.FromToRotation(n, PlanetToGrenade) * original;
+            //planet.transform.rotation = target;
+        }        
     }
     #endregion
 
@@ -241,6 +288,18 @@ public class TurnController : NetworkBehaviour
     void AlignPlayerWithCamera()
     {
         Players[currentPlayer].transform.rotation = Quaternion.LookRotation(GetCurrentPlayerForward(), GetCurrentPlayerUp());
+    }
+
+    void AlignPlayerWithArrow()
+    {
+        if(WandHead.GetArrowHead() != WandHead.GetArrowTail())
+        {
+            Vector3 PlayerToCamera = Camera.main.transform.position - Players[currentPlayer].transform.position;
+            Vector3 left = Vector3.Cross(PlayerToCamera.normalized, (WandHead.GetArrowHead() - WandHead.GetArrowTail()).normalized);
+            Vector3 forward = Vector3.Cross(left, PlayerToCamera.normalized);
+            Players[currentPlayer].transform.LookAt(Players[currentPlayer].transform.position + forward, PlayerToCamera);
+            AssetManager.Instance.Get("Planet").GetComponent<Planet>().ClampPlayerUpright(Players[currentPlayer]);
+        }
     }
 
     Vector3 GetCurrentPlayerForward()
