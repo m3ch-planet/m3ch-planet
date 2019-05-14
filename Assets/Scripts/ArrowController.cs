@@ -36,6 +36,7 @@ public class ArrowController : MonoBehaviour
         AttackDown = false;
         PrevWandPosition = transform.position;
         direction = ArrowHead = ArrowTail = Vector3.zero;
+        arrow.enabled = false;
     }
 
 	public void OnAttackDown()

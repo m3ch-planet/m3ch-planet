@@ -223,10 +223,10 @@ public class TurnController : NetworkBehaviour
         }
         else if (param == "To Grenade")
         {
-            GameObject Grenade = GameObject.FindGameObjectWithTag("Grenade");
-            Vector3 PlanetToGrenade = (Grenade.transform.position - planet.transform.position).normalized;
-            target = Quaternion.FromToRotation(n, PlanetToGrenade) * original;
-            planet.transform.rotation = target;
+            //GameObject Grenade = GameObject.FindGameObjectWithTag("Grenade");
+            //Vector3 PlanetToGrenade = (Grenade.transform.position - planet.transform.position).normalized;
+            //target = Quaternion.FromToRotation(n, PlanetToGrenade) * original;
+            //planet.transform.rotation = target;
         }        
     }
     #endregion
