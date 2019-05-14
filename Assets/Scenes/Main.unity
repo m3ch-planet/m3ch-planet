@@ -4179,7 +4179,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: Create Room
+  m_text: Create Game
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a2e4d40a5c841c64cadbcbe7deaccb12, type: 2}
   m_sharedMaterial: {fileID: 21389532919194846, guid: a2e4d40a5c841c64cadbcbe7deaccb12,
@@ -5010,7 +5010,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: Join Room
+  m_text: Join Game
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a2e4d40a5c841c64cadbcbe7deaccb12, type: 2}
   m_sharedMaterial: {fileID: 21389532919194846, guid: a2e4d40a5c841c64cadbcbe7deaccb12,
