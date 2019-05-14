@@ -137,13 +137,26 @@ public class TurnController : NetworkBehaviour
         {
             SyncCurrentPlayerTransform();
         }
-        if (Attacking)
+        if (Attacking && !Shooting)
         {
+            //render everything
+            Camera.main.cullingMask = ~(1 << 10);            
+            //follow current player, but spin player towards cam
             SpinPlanet("To Cam");
         }
-        else
+        else if (!Attacking && !Shooting)
         {
+            //don't render player ui
+            Camera.main.cullingMask = ~(0);
+            //follow current player, but spin player to top
             SpinPlanet("To up");
+        }
+        else if(!Attacking && Shooting)
+        {
+            //render everything
+            Camera.main.cullingMask = ~(0);
+            //follow grenade
+            SpinPlanet("To Grenade");
         }
     }
 
@@ -199,16 +212,22 @@ public class TurnController : NetworkBehaviour
         Quaternion target = Quaternion.identity;
         if (param == "To up")
         {
-            target = Quaternion.FromToRotation(n, Vector3.up) * original; 
+            target = Quaternion.FromToRotation(n, Vector3.up) * original;
+            planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 2);
         }
         else if(param == "To Cam")
         {
             Vector3 PlanetToCamera = (Camera.main.transform.position - planet.transform.position).normalized;
             target = Quaternion.FromToRotation(n, PlanetToCamera) * original;
+            planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 2);
         }
-        planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 2);
-        
-        
+        else if (param == "To Grenade")
+        {
+            GameObject Grenade = GameObject.FindGameObjectWithTag("Grenade");
+            Vector3 PlanetToGrenade = (Grenade.transform.position - planet.transform.position).normalized;
+            target = Quaternion.FromToRotation(n, PlanetToGrenade) * original;
+            planet.transform.rotation = target;
+        }        
     }
     #endregion
 
