@@ -23,7 +23,7 @@ An example setup should look like the following:
 ### Hosting and Joining a Game
 Upon launching the application, the user will be given the main menu screen. They will have the options of either creating a game, joining a game, or editing their profile.
 
-![Main Menu Screenshot](README_Assets/mainmenu.jpg)
+![Main Menu Screenshot](README_Assets/mainmenu.png)
 
 ### Edit Player Profile
 After clicking “My Profile”, the user will be directed to a screen where they can change the name of their profile. The name entered here will be the same name that is shown above their virtual avatar when they are starting and playing in a game.
