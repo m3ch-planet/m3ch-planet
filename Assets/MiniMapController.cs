@@ -22,7 +22,7 @@ public class MiniMapController : MonoBehaviour
         }else if (GC.GetGameHappening())
         {
             transform.position = LocalPlayer.transform.position + LocalPlayer.transform.up * 1.45f;
-            transform.LookAt(LocalPlayer.transform);
+            transform.LookAt(LocalPlayer.transform,LocalPlayer.transform.forward);
         }
     }
 }
