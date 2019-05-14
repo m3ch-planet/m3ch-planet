@@ -64,7 +64,7 @@ public class PowerUp : MonoBehaviour
                     break;
                 default:
                     // If user's inventory is full, do not add to inventory
-                    if (TC.GetCurrentPlayer().GetInventory().Count < 2)
+                    if (TC.GetCurrentPlayer().GetInventory().Count >= 2)
                         return;
                     TC.GetCurrentPlayer().CmdAddToInventory(this);
                     break;
