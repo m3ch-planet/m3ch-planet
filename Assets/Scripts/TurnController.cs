@@ -25,12 +25,16 @@ public class TurnController : NetworkBehaviour
 
     //Player Variables
     PlayerController[] Players;
+    
 
     //Other Game Variables
     GameController GC;
     AssetManager AM;
     ARDebugger d;
     UIController UI;
+
+    //Attacking variables
+    ArrowController WandHead;
 
     public int NUMBER_OF_POWERUPS;
 
@@ -45,6 +49,7 @@ public class TurnController : NetworkBehaviour
         TurnStartTime = -1;
         HasEnergy = true;
         Shooting = false;
+        WandHead = GameObject.FindGameObjectWithTag("WandHead").GetComponent<ArrowController>();
     }
 
     public void InitPlayers(LinkedList<PlayerController> PlayersList)
@@ -104,6 +109,7 @@ public class TurnController : NetworkBehaviour
     #region Networking & Transformations
     void HandleSyncTransforms()
     {
+        bool Attacking = WandHead.GetAttackButtonDown();
         if (Players[currentPlayer]._isLocalPlayer)
         {
             if (Walking)
@@ -116,7 +122,10 @@ public class TurnController : NetworkBehaviour
                 Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 2;
             }
             //Camera up
-            AlignPlayerWithCamera();
+            if (Attacking)
+                AlignPlayerWithArrow(); 
+            else
+                AlignPlayerWithCamera();
             //if is local player then send position to other clients via server
             Players[currentPlayer].CmdSendPlayerTransform(
                 Players[currentPlayer].transform.localPosition,
@@ -128,7 +137,7 @@ public class TurnController : NetworkBehaviour
         {
             SyncCurrentPlayerTransform();
         }
-        if (GameObject.FindGameObjectWithTag("WandHead").GetComponent<ArrowController>().GetAttackButtonDown())
+        if (Attacking)
         {
             SpinPlanet("To Cam");
         }
@@ -260,6 +269,18 @@ public class TurnController : NetworkBehaviour
     void AlignPlayerWithCamera()
     {
         Players[currentPlayer].transform.rotation = Quaternion.LookRotation(GetCurrentPlayerForward(), GetCurrentPlayerUp());
+    }
+
+    void AlignPlayerWithArrow()
+    {
+        if(WandHead.GetArrowHead() != WandHead.GetArrowTail())
+        {
+            Vector3 PlayerToCamera = Camera.main.transform.position - Players[currentPlayer].transform.position;
+            Vector3 left = Vector3.Cross(PlayerToCamera.normalized, (WandHead.GetArrowHead() - WandHead.GetArrowTail()).normalized);
+            Vector3 forward = Vector3.Cross(left, PlayerToCamera.normalized);
+            Players[currentPlayer].transform.LookAt(Players[currentPlayer].transform.position + forward, PlayerToCamera);
+            AssetManager.Instance.Get("Planet").GetComponent<Planet>().ClampPlayerUpright(Players[currentPlayer]);
+        }
     }
 
     Vector3 GetCurrentPlayerForward()

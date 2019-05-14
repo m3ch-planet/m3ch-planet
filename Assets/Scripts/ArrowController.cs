@@ -15,6 +15,8 @@ public class ArrowController : MonoBehaviour
     bool AttackDown;
     Vector3 PrevWandPosition;
     Vector3 direction;
+    Vector3 ArrowHead;
+    Vector3 ArrowTail;
     LineRenderer arrow;
     PlayerController LocalPlayer;
     void Start()
@@ -33,7 +35,7 @@ public class ArrowController : MonoBehaviour
             
         AttackDown = false;
         PrevWandPosition = transform.position;
-        direction = Vector3.zero;
+        direction = ArrowHead = ArrowTail = Vector3.zero;
     }
 
 	public void OnAttackDown()
@@ -63,8 +65,8 @@ public class ArrowController : MonoBehaviour
             //draw arrow
             arrow.enabled = true;
             LocalPlayer = GC.GetLocalPlayer();
-            Vector3 ArrowTail = LocalPlayer.transform.position + LocalPlayer.transform.up*0.3f;
-            Vector3 ArrowHead = ArrowTail + direction;
+            ArrowTail = LocalPlayer.transform.position + LocalPlayer.transform.up*0.3f;
+            ArrowHead = ArrowTail + direction;
             arrow.SetPositions(new Vector3[] { ArrowTail, ArrowHead });
             arrow.startWidth = 0.05f;
             arrow.endWidth = 0.05f;
@@ -74,5 +76,15 @@ public class ArrowController : MonoBehaviour
     public bool GetAttackButtonDown()
     {
         return AttackDown;
+    }
+
+    public Vector3 GetArrowHead()
+    {
+        return ArrowHead;
+    }
+
+    public Vector3 GetArrowTail()
+    {
+        return ArrowTail;
     }
 }
