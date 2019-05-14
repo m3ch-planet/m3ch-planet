@@ -355,13 +355,14 @@ public class TurnController : NetworkBehaviour
     public void CmdInitPowerUps(GameObject Planet)
     {
         print("Spawning powerups...");
+        UnityEngine.Random.seed = 5;
+
         // For loop of Instantiate and spawning
         for (int i = 0; i < NUMBER_OF_POWERUPS; i++)
         {
 
 
             Vector3 randomPos = (UnityEngine.Random.onUnitSphere * 1.5f) + Planet.transform.position;
-
 
             float random = UnityEngine.Random.Range(0f, 1f);
 

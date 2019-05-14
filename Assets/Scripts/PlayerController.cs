@@ -99,6 +99,11 @@ public class PlayerController : NetworkBehaviour
         return inventory;
     }
 
+    public void RemoveFromInventory(PowerUp item)
+    {
+        inventory.Remove(item);
+    }
+
     [Command]
     public void CmdSetDoubleDmg(bool active)
     {

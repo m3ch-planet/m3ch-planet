@@ -88,7 +88,7 @@ public class ArrowController : MonoBehaviour
 		{
 			arrow.enabled = false;
 		}
-	}
+	
 
 	if (isTeleporting)
 	{
@@ -128,8 +128,6 @@ public void Teleport()
 		arrow.enabled = false;
 	}
 }
-
->>>>>>> Implement teleportation
 
 public bool GetAttackButtonDown()
 {
@@ -183,8 +181,8 @@ public void ConsumeItem()
 				UI.EnableTeleportBtn(true);
 				break;
 		}
-
-		UI.EnableUseItemBtn(false);
+        GC.GetLocalPlayer().RemoveFromInventory(selectedItem.GetComponent<PowerUp>());
+   		UI.EnableUseItemBtn(false);
 		Destroy(selectedItem);
 		selectedItem = null;
 	}
