@@ -28,7 +28,7 @@ Upon launching the application, the user will be given the main menu screen. The
 ### Edit Player Profile
 After clicking “My Profile”, the user will be directed to a screen where they can change the name of their profile. The name entered here will be the same name that is shown above their virtual avatar when they are starting and playing in a game.
 
-!(README_Assets/profile.jpg)
+![Profile Screen](README_Assets/profile.jpg)
 
 ### Hosting a Game
 After pressing “Host Game”,  the user will then be directed to the next screen in which they can enter the name of the game. After entering the desired name of their game, they can press the button “Create Game”. 
