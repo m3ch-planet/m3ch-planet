@@ -8,6 +8,7 @@ public class AssetManager : MonoBehaviour
     public GameObject PlanetPrefab;
     public GameObject GroundImageTarget;
     public GameObject Grenade;
+    public GameObject PowerUp;
 
     public static AssetManager Instance;
 
@@ -26,6 +27,8 @@ public class AssetManager : MonoBehaviour
                 return GroundImageTarget;
             case "Grenade":
                 return Grenade;
+            case "PowerUp":
+                return PowerUp;
             default:
                 return null;
         }
