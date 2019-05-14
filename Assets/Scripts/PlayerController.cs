@@ -127,11 +127,16 @@ public class PlayerController : NetworkBehaviour
         if (GC.AreAllPlayersReady())
             CmdStartGame();
     }
+    [Command]
+    public void CmdAddHealth(float health)
+    {
+        currentHealth += health;
+    }
 
     [Command]
-    public void CmdSetEnergy(float energy)
+    public void CmdAddEnergy(float energy)
     {
-	currentEnergy = energy;
+	    currentEnergy += energy;
     }
 
     [Command]

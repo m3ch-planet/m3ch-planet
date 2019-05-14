@@ -35,8 +35,6 @@ public class TurnController : NetworkBehaviour
     public int NUMBER_OF_POWERUPS;
 
 
-
-
     // Start is called before the first frame update
     void Start()
     {
@@ -207,8 +205,8 @@ public class TurnController : NetworkBehaviour
         {
             Vector3 randomPos = (UnityEngine.Random.onUnitSphere * 1.5f) + Planet.transform.position;
             GameObject PowerUp = Instantiate(AM.Get("HealthPack"), randomPos, Quaternion.identity);
+            PowerUp.GetComponent<PowerUp>().SetPowerUpType(global::PowerUp.PowerUpType.HEALTH);
             NetworkServer.Spawn(PowerUp);
-            //PowerUp.gameObject.name = "PowerUp " + PowerUp.GetComponent<NetworkIdentity>().netId.ToString();
 
             // TODO: Randomly assign power up category by setting the appropriate tag
             // First do wayfinding before this

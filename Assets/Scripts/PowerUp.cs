@@ -28,7 +28,10 @@ public class PowerUp : MonoBehaviour
             switch (type)
             {
                 case PowerUpType.ENERGY:
-                    player.CmdSetEnergy(30);
+                    player.CmdAddEnergy(30);
+                    break;
+                case PowerUpType.HEALTH:
+                    player.CmdAddHealth(30);
                     break;
                 default:
                     break;
