@@ -26,6 +26,7 @@ public class UIController : MonoBehaviour
 
     private GameObject holdAttackText;
     private GameObject holdWalkText;
+    private GameObject victoryPanel;
     
 
     [SerializeField]
@@ -59,6 +60,9 @@ public class UIController : MonoBehaviour
         TurnTimeText = TurnPanel.GetComponentsInChildren<TextMeshProUGUI>()[1];
         
         MyProfile = GameObject.Find("MyProfile");
+        
+        victoryPanel = GameObject.Find("VictoryPanel");
+        victoryPanel.SetActive(false);
         
         
 
@@ -188,5 +192,9 @@ public class UIController : MonoBehaviour
     public void SetTurnTime(bool active)
     {
         TurnTimeText.gameObject.SetActive(active);
+    }
+
+    public void SetVictoryPanel(bool active) {
+        victoryPanel.SetActive(active);
     }
 }

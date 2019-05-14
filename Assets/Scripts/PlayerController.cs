@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
@@ -38,6 +39,7 @@ public class PlayerController : NetworkBehaviour
     GameController GC;
     AssetManager AM;
     TurnController TC;
+    private UIController UI;
 
     //Debug Variables
     ARDebugger d;
@@ -79,6 +81,7 @@ public class PlayerController : NetworkBehaviour
         PlayerUICanvas.GetComponent<Canvas>().worldCamera = Camera.main;
         PlayerMesh = transform.GetChild(0).gameObject;
         anim = GetComponent<Animator>();
+        UI = GC.GetComponent<UIController>();
     }
 
     public void InitPlayerName(string name)
@@ -127,6 +130,21 @@ public class PlayerController : NetworkBehaviour
     	}
 
         currentHealth -= _amt;
+
+        if (currentHealth <= 0.0f) {
+            string _ID = GetComponent<NetworkIdentity>().netId.ToString();
+            GameController.UnRegisterPlayer("Player " + _ID);
+            TC.Players = TC.Players.Where(val => val != this).ToArray();
+            GameController.Players.Remove("Player" + _ID);
+            GameController.PlayersList.Remove(this);
+
+            if (GameController.Players.Count <= 1) {
+                // this player wins
+                UI.SetVictoryPanel(true);
+                UI.SetTurnPanel(false);
+                StartCoroutine(RestartGame());
+            }
+        }
     }
 
     public float GetEnergy()
@@ -287,5 +305,10 @@ public class PlayerController : NetworkBehaviour
         TC.UpdatePlayerNetworkTransforms(localPos, localRot, PlayerName);
     }
     #endregion
+
+    IEnumerator RestartGame() {
+        yield return new WaitForSeconds(5);
+        Application.LoadLevel(Application.loadedLevel);
+    }
 
 }

@@ -24,7 +24,7 @@ public class TurnController : NetworkBehaviour
     bool HasEnergy;
 
     //Player Variables
-    PlayerController[] Players;
+    public PlayerController[] Players;
     
 
     //Other Game Variables

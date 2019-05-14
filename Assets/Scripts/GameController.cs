@@ -7,8 +7,8 @@ public class GameController : MonoBehaviour
 {
     //Players Variables
     const string PLAYER_ID_PREFIX = "Player ";
-    static Dictionary<string, PlayerController> Players = new Dictionary<string, PlayerController>();
-    static LinkedList<PlayerController> PlayersList = new LinkedList<PlayerController>();
+    public static Dictionary<string, PlayerController> Players = new Dictionary<string, PlayerController>();
+    public static LinkedList<PlayerController> PlayersList = new LinkedList<PlayerController>();
     PlayerController LocalPlayer;
 
     //Other Game Variables
