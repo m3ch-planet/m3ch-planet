@@ -6,66 +6,66 @@ public class ArrowController : MonoBehaviour
 {
 	TurnController TC;
 	GameController GC;
-    UIController UI;
+	UIController UI;
 
 	const float PERCENT_ARROW_HEAD = 0.1f; // Percent of the arrow that makes up the tip
 	const float ARROW_HEAD_WIDTH = 0.8f; // Default width of the arrow
 	const float ARROW_SHAFT_WIDTH = 0.4f; // Default width of the arrow head
 	const float MAX_LEN = 3.0f; // Maximum magnitude of the arrow
 
-    bool AttackDown;
-    Vector3 PrevWandPosition;
-    Vector3 direction;
-    Vector3 ArrowHead;
-    Vector3 ArrowTail;
-    LineRenderer arrow;
-    PlayerController LocalPlayer;
+	bool AttackDown;
+	Vector3 PrevWandPosition;
+	Vector3 direction;
+	Vector3 ArrowHead;
+	Vector3 ArrowTail;
+	LineRenderer arrow;
+	PlayerController LocalPlayer;
 
-    bool isTeleporting = false;
+	bool isTeleporting = false;
 
-    GameObject selectedItem;
+	GameObject selectedItem;
 
-    void Start()
+	void Start()
 	{
 		GC = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
-        UI = GameObject.FindGameObjectWithTag("GameController").GetComponent<UIController>();
+		UI = GameObject.FindGameObjectWithTag("GameController").GetComponent<UIController>();
 
-        TC = null;
+		TC = null;
 		arrow = GetComponent<LineRenderer>();
-        if (arrow == null)
-        {
-            print("Arrow is null");
-        }
-        else
-        {
-            print("Arrow not null!!______");
-        }
-            
-        AttackDown = false;
-        PrevWandPosition = transform.position;
-        direction = ArrowHead = ArrowTail = Vector3.zero;
-        arrow.enabled = false;
-    }
+		if (arrow == null)
+		{
+			print("Arrow is null");
+		}
+		else
+		{
+			print("Arrow not null!!______");
+		}
+
+		AttackDown = false;
+		PrevWandPosition = transform.position;
+		direction = ArrowHead = ArrowTail = Vector3.zero;
+		arrow.enabled = false;
+	}
 
 	public void OnAttackDown()
 	{
-        AttackDown = true;
-        PrevWandPosition = transform.position;
-        arrow.enabled = true;
-    }
+		AttackDown = true;
+		PrevWandPosition = transform.position;
+		arrow.enabled = true;
+	}
 
 	public void OnAttackUp()
 	{
-        AttackDown = false;
-        arrow.enabled = false;
-        if(TC == null)
-            TC = GameObject.FindGameObjectWithTag("TurnController").GetComponent<TurnController>();
-        if(TC != null)
-        {
-            //TC.Attack(Vector3.up*4f);
-            TC.Attack(direction * 3); // Shoot grenade in the direction of the arrow
-        }
-            
+		AttackDown = false;
+		arrow.enabled = false;
+		if(TC == null)
+			TC = GameObject.FindGameObjectWithTag("TurnController").GetComponent<TurnController>();
+		if(TC != null)
+		{
+			//TC.Attack(Vector3.up*4f);
+			TC.Attack(direction * 3); // Shoot grenade in the direction of the arrow
+		}
+
 	}
 
 	void Update()
@@ -88,108 +88,108 @@ public class ArrowController : MonoBehaviour
 		{
 			arrow.enabled = false;
 		}
-	
 
-	if (isTeleporting)
-	{
-		float rayLength = 5f;
-		arrow.enabled = true;
-		ArrowTail = transform.position;
-		ArrowHead = ArrowTail + rayLength * transform.up;
 
-		RaycastHit hit;
-		if (Physics.Raycast(ArrowTail, transform.TransformDirection(Vector3.up), out hit, rayLength))
+		if (isTeleporting)
 		{
-			ArrowHead = ArrowTail + hit.distance * transform.up;
+			float rayLength = 5f;
+			arrow.enabled = true;
+			ArrowTail = transform.position;
+			ArrowHead = ArrowTail + rayLength * transform.up;
+
+			RaycastHit hit;
+			if (Physics.Raycast(ArrowTail, transform.TransformDirection(Vector3.up), out hit, rayLength))
+			{
+				ArrowHead = ArrowTail + hit.distance * transform.up;
+			}
+			arrow.SetPositions(new Vector3[] { ArrowTail, ArrowHead });
+			arrow.startWidth = 0.05f;
+			arrow.endWidth = 0.05f;
+
+
 		}
-		arrow.SetPositions(new Vector3[] { ArrowTail, ArrowHead });
-		arrow.startWidth = 0.05f;
-		arrow.endWidth = 0.05f;
-
-
 	}
-}
 
-public void Teleport()
-{
-	// If the wand ray hits an object, then teleport
-	RaycastHit hit;
-	if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.up), out hit, 5f))
+	public void Teleport()
 	{
-		GC.GetLocalPlayer().gameObject.transform.position = transform.position + hit.distance * transform.up;
-		AssetManager.Instance.Get("Planet").GetComponent<Planet>().ClampPlayerUpright(GC.GetLocalPlayer());
-		GC.GetLocalPlayer().CmdSendPlayerTransform(
-				GC.GetLocalPlayer().transform.localPosition,
-				GC.GetLocalPlayer().transform.localRotation,
-				GC.GetLocalPlayer().GetPlayerName()
-				);
-		UI.EnableTeleportBtn(false);
-		isTeleporting = false;
-		arrow.enabled = false;
-	}
-}
-
-public bool GetAttackButtonDown()
-{
-	return AttackDown;
-}
-
-public Vector3 GetArrowHead()
-{
-	return ArrowHead;
-}
-
-public Vector3 GetArrowTail()
-{
-	return ArrowTail;
-}
-
-private void OnTriggerEnter(Collider other)
-{
-	if (other.CompareTag("InventoryItem"))
-	{
-		UI.EnableUseItemBtn(true);
-		selectedItem = other.gameObject;
-	}
-}
-
-private void OnTriggerExit(Collider other)
-{
-	if (other.CompareTag("InventoryItem"))
-	{
-		UI.EnableUseItemBtn(false);
-		selectedItem = null;
-	}
-}
-
-
-
-public void ConsumeItem()
-{
-	if (selectedItem != null)
-	{
-		Debug.Log(selectedItem.GetComponent<PowerUp>().GetPowerUpType());
-		switch (selectedItem.GetComponent<PowerUp>().GetPowerUpType()) {
-			case "PowerupShield":
-				GC.GetLocalPlayer().CmdSetShield(true);
-				break;
-			case "PowerupDamage":
-				GC.GetLocalPlayer().CmdSetDoubleDmg(true);
-				break;
-			case "PowerupTeleport":
-				isTeleporting = true;
-				UI.EnableTeleportBtn(true);
-				break;
+		// If the wand ray hits an object, then teleport
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.up), out hit, 5f))
+		{
+			GC.GetLocalPlayer().gameObject.transform.position = transform.position + hit.distance * transform.up;
+			AssetManager.Instance.Get("Planet").GetComponent<Planet>().ClampPlayerUpright(GC.GetLocalPlayer());
+			GC.GetLocalPlayer().CmdSendPlayerTransform(
+					GC.GetLocalPlayer().transform.localPosition,
+					GC.GetLocalPlayer().transform.localRotation,
+					GC.GetLocalPlayer().GetPlayerName()
+					);
+			UI.EnableTeleportBtn(false);
+			isTeleporting = false;
+			arrow.enabled = false;
 		}
-        GC.GetLocalPlayer().RemoveFromInventory(selectedItem.GetComponent<PowerUp>());
-   		UI.EnableUseItemBtn(false);
-		Destroy(selectedItem);
-		selectedItem = null;
 	}
-}
 
-public void SetArrow(bool active)
-{
-	arrow.enabled = active;
-}
+	public bool GetAttackButtonDown()
+	{
+		return AttackDown;
+	}
+
+	public Vector3 GetArrowHead()
+	{
+		return ArrowHead;
+	}
+
+	public Vector3 GetArrowTail()
+	{
+		return ArrowTail;
+	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.CompareTag("InventoryItem"))
+		{
+			UI.EnableUseItemBtn(true);
+			selectedItem = other.gameObject;
+		}
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		if (other.CompareTag("InventoryItem"))
+		{
+			UI.EnableUseItemBtn(false);
+			selectedItem = null;
+		}
+	}
+
+
+
+	public void ConsumeItem()
+	{
+		if (selectedItem != null)
+		{
+			Debug.Log(selectedItem.GetComponent<PowerUp>().GetPowerUpType());
+			switch (selectedItem.GetComponent<PowerUp>().GetPowerUpType()) {
+				case "PowerupShield":
+					GC.GetLocalPlayer().CmdSetShield(true);
+					break;
+				case "PowerupDamage":
+					GC.GetLocalPlayer().CmdSetDoubleDmg(true);
+					break;
+				case "PowerupTeleport":
+					isTeleporting = true;
+					UI.EnableTeleportBtn(true);
+					break;
+			}
+			GC.GetLocalPlayer().RemoveFromInventory(selectedItem.GetComponent<PowerUp>());
+			UI.EnableUseItemBtn(false);
+			Destroy(selectedItem);
+			selectedItem = null;
+		}
+	}
+
+	public void SetArrow(bool active)
+	{
+		arrow.enabled = active;
+	}
 }
