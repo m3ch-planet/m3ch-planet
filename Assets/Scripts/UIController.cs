@@ -23,6 +23,9 @@ public class UIController : MonoBehaviour
     GameObject HostMenu;
 
     GameObject MyProfile;
+
+    private GameObject holdAttackText;
+    private GameObject holdWalkText;
     
 
     [SerializeField]
@@ -56,6 +59,8 @@ public class UIController : MonoBehaviour
         TurnTimeText = TurnPanel.GetComponentsInChildren<TextMeshProUGUI>()[1];
         
         MyProfile = GameObject.Find("MyProfile");
+        
+        
 
         // Set up event handlers
         GameObject.Find("My Profile").GetComponent<Button>().onClick.AddListener(() =>
@@ -122,6 +127,12 @@ public class UIController : MonoBehaviour
         EnableUseItemBtn(false);
         EnableTeleportBtn(false);
         PlayerTurnPanel.SetActive(false);
+        
+        holdAttackText = GameObject.Find("HoldAttackText");
+        holdAttackText.SetActive(false);
+        
+        holdWalkText = GameObject.Find("HoldWalkText");
+        holdWalkText.SetActive(false);
     }
 
     public void EnableStartMenu(bool active)
