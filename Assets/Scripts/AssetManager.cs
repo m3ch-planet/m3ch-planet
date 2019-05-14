@@ -26,7 +26,7 @@ public class AssetManager : MonoBehaviour
     {
         switch (name)
         {
-             case "Planet":
+            case "Planet":
                 return PlanetPrefab;
             case "GroundImageTarget":
                 return GroundImageTarget;
