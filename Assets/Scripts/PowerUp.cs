@@ -7,10 +7,12 @@ public class PowerUp : MonoBehaviour
     public enum PowerUpType { HEALTH, ENERGY, DAMAGE, SHIELD, TELEPORT };
     PowerUpType type;
     TurnController TC;
+    UIController UI;
 
     private void Start()
     {
         TC = GameObject.FindWithTag("TurnController").GetComponent<TurnController>();
+        UI = GameObject.FindWithTag("GameController").GetComponent<UIController>();
     }
 
 
@@ -31,6 +33,11 @@ public class PowerUp : MonoBehaviour
             default:
                 return "";
         }
+    }
+
+    public PowerUpType GetPowerUpTypeEnum()
+    {
+        return type;
     }
 
     public void SetPowerUpType(PowerUpType type)
@@ -63,4 +70,5 @@ public class PowerUp : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
 }

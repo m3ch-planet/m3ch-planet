@@ -29,8 +29,10 @@ public class PlayerController : NetworkBehaviour
     Animator anim;
 
     // Powerups
-    bool doubleDmg = true;
-    bool hasShield = true;
+    [SyncVar]
+    bool doubleDmg = false;
+    [SyncVar]
+    bool hasShield = false;
 
     //Other Game variables
     GameController GC;
@@ -98,12 +100,26 @@ public class PlayerController : NetworkBehaviour
     }
 
     [Command]
+    public void CmdSetDoubleDmg(bool active)
+    {
+        Debug.Log("Setting double damage to " + active);
+        doubleDmg = active;
+    }
+
+    [Command]
+    public void CmdSetShield(bool active)
+    {
+        Debug.Log("Setting shield to " + active);
+        hasShield = active;
+    }
+
+    [Command]
     public void CmdTakeDamage(float _amt)
     {
-	if (hasShield) {
-		hasShield = false;
-		return;
-	}
+    	if (hasShield) {
+    		hasShield = false;
+    		return;
+    	}
 
         currentHealth -= _amt;
     }

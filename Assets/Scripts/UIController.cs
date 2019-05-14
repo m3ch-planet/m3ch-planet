@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour
     GameObject PlayerTurnPanel;
     TextMeshProUGUI TurnText;
     TextMeshProUGUI TurnTimeText;
+    GameObject UseItemBtn;
 
     GameObject StartMenu;
     GameObject JoinMenu;
@@ -35,6 +36,7 @@ public class UIController : MonoBehaviour
         StartMenu = GameObject.Find("StartMenu");
         JoinMenu = GameObject.Find("JoinMenu");
         HostMenu = GameObject.Find("HostMenu");
+        UseItemBtn = GameObject.Find("UseItem");
 
 
         WaitRoomPanel = GameObject.Find("WaitRoomPanel");
@@ -67,6 +69,10 @@ public class UIController : MonoBehaviour
 
     }
 
+    public void EnableUseItemBtn(bool active)
+    {
+        UseItemBtn.SetActive(active);
+    }
     public void GoBack()
     {
         EnableHostMenu(false);
@@ -87,6 +93,7 @@ public class UIController : MonoBehaviour
         EnableJoinMenu(false);
         WaitRoomPanel.SetActive(false);
         TurnPanel.SetActive(false);
+        EnableUseItemBtn(false);
         PlayerTurnPanel.SetActive(false);
     }
 
