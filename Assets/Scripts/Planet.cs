@@ -10,6 +10,10 @@ public class Planet : MonoBehaviour
     TurnController TC;
     List<Rigidbody> RB;
     ARDebugger d;
+    AssetManager AM;
+    int NUMBER_OF_POWERUPS = 20;
+    public int seed = 10;
+
 
     //Player Book Keeping
     bool init;
@@ -22,6 +26,7 @@ public class Planet : MonoBehaviour
         TC = GameObject.FindGameObjectWithTag("TurnController").GetComponent<TurnController>();
         d = GC.gameObject.GetComponent<ARDebugger>();
         RB = new List<Rigidbody>();
+        AM = AssetManager.Instance;
     }
 
     public void Init(int InitSeed)
@@ -49,7 +54,65 @@ public class Planet : MonoBehaviour
             Player.transform.position = transform.position + n;
             ClampPlayerUpright(Player);
         }
+        InitPowerUps();
         init = true;
+    }
+
+    public void InitPowerUps()
+    {
+        print("Spawning powerups...");
+
+        // For loop of Instantiate and spawning
+        for (int i = 0; i < NUMBER_OF_POWERUPS; i++)
+        {
+            Vector3 randomPos = (Random.onUnitSphere * 1.5f) + transform.position;
+
+            float random = Random.Range(0f, 1f);
+
+            GameObject prefab = null;
+            global::PowerUp.PowerUpType type;
+
+            if (random <= .3f)
+            {
+                prefab = AM.Get("PowerupHealth");
+                type = global::PowerUp.PowerUpType.HEALTH;
+            }
+            else if (random <= .6f)
+            {
+                prefab = AM.Get("PowerupEnergy");
+                type = global::PowerUp.PowerUpType.ENERGY;
+
+            }
+            else if (random <= .75f)
+            {
+                prefab = AM.Get("PowerupDamage");
+                type = global::PowerUp.PowerUpType.DAMAGE;
+
+            }
+            else if (random <= .9f)
+            {
+                prefab = AM.Get("PowerupShield");
+                type = global::PowerUp.PowerUpType.SHIELD;
+
+            }
+            else
+            {
+                prefab = AM.Get("PowerupTeleport");
+                type = global::PowerUp.PowerUpType.TELEPORT;
+
+            }
+
+            GameObject PowerUp = Instantiate(prefab, randomPos, Quaternion.identity);
+            PowerUp.GetComponent<PowerUp>().SetPowerUpType(type);
+            NetworkServer.Spawn(PowerUp);
+
+            // TODO: Randomly assign power up category by setting the appropriate tag
+            // First do wayfinding before this
+
+            // Set parent of powerups to planet
+            PowerUp.transform.parent = transform;
+            GetComponent<Planet>().ClampPowerupUpright(PowerUp);
+        }
     }
 
     // Update is called once per frame
@@ -57,7 +120,8 @@ public class Planet : MonoBehaviour
     {
         if (!init && TC.GetPlayers().Length > 0)
         {
-            Init(5);
+            Debug.Log("Seed is " + seed);
+            Init(seed);
         }
         //TODO handle when a player disconnects or leaves the room
         if (RB != null && RB.Count > 0)
