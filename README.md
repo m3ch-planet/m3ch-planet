@@ -18,7 +18,7 @@ This image target allows the player to select power ups. They should hold this i
 
 An example setup should look like the following:
 
-[ screenshot of ideal setup from the perspective of a player holding the image targets and setting up everything else correctly ]
+![Ideal Setup Picture](README_Assets/ideal_setup.jpg)
 
 ### Hosting and Joining a Game
 Upon launching the application, the user will be given the main menu screen. They will have the options of either creating a game, joining a game, or editing their profile.
@@ -32,15 +32,16 @@ After clicking “My Profile”, the user will be directed to a screen where the
 
 ### Hosting a Game
 After pressing “Host Game”,  the user will then be directed to the next screen in which they can enter the name of the game. After entering the desired name of their game, they can press the button “Create Game”. 
-[ screenshot of creating a match ]
+![Host Game Screen](README_Assets/createroom.jpg)
+
 Afterwards, the user will be directed to the waiting room. Here, the user needs to point the camera at the battle arena image target to start tracking it. After doing so, a virtual avatar with the player’s specified profile name and the Not Ready status will drop down and land on the image target, as seen below.
- [ player in waiting room ]
+![Waiting Room](README_Assets/waitingroom.jpg)
  
 ### Waiting Room 
 Joining a Game
 From the starting menu, the user can also press “Join Game” to be directed to the following screen:
 
-[ screenshot of join room screen ]
+![Join Room](README_Assets/joinroom.jpg)
 
 Here, the user will see a list of the available games created by other users who may have the app loaded and have chosen to host a game. If there is an available game with space, they can tap on the game they’d like to join and be immediately directed to the waiting room (as seen above). 
 Starting the Match
@@ -57,7 +58,7 @@ When the user holds the “Walk” button, the avatar will walk forward in the d
 ### Attack
 When the user holds the “Attack” button, they are now able to throw grenades to do damage to other players. In this mode, they should then use the wand in their other hand as a bow-and-arrow to direct the magnitude and direction of their grenade throw. Here, the direction and magnitude of the grenade throw is mapped directly to the direction that the red line (i.e. the “arrow”) points to and its length. The red line originates from the player’s position, as shown below:
 
-	[ screenshot of attack arrow in action ]
+![Attack Interaction](README_Assets/arrow.jpg)
 
 As an example, if the user moves the wand to their right, the red line will point towards the left. If the user pulls their wand back, the red line will lengthen to indicate that the strength of the throw is increased. 
 
