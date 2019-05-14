@@ -37,6 +37,7 @@ public class MatchmakingController : MonoBehaviour
 
         // Set up network manager
         networkManager = NetworkManager.singleton;
+
         ui = GameObject.Find("GameController").GetComponentInChildren<UIController>();
 
 

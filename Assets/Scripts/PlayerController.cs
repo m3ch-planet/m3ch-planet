@@ -137,6 +137,18 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    [Command]
+    public void CmdChangeEnergy(int amt)
+    {
+        currentEnergy += amt;
+    }
+
+    [Command]
+    public void CmdChangeHealth(int amt)
+    {
+        currentHealth += amt;
+    }
+
     public bool GetReady()
     {
         return _ready;
@@ -200,8 +212,9 @@ public class PlayerController : NetworkBehaviour
         GameObject Planet = Instantiate(AM.Get("Planet"));
         NetworkServer.Spawn(Planet);
         Planet.gameObject.name = "Planet " + Planet.GetComponent<NetworkIdentity>().netId.ToString();
+        TC.CmdInitPowerUps(Planet);
         RpcStartGame(Planet);
-    }
+    }   
 
     //Tells every client to start game
     [ClientRpc]
