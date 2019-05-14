@@ -127,4 +127,9 @@ public class GameController : MonoBehaviour
     {
         return LocalPlayer;
     }
+
+    public LinkedList<PlayerController> GetPlayersList()
+    {
+        return PlayersList;
+    }
 }

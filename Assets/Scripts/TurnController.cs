@@ -147,7 +147,7 @@ public class TurnController : NetworkBehaviour
         else if (!Attacking && !Shooting)
         {
             //don't render player ui
-            Camera.main.cullingMask = ~(0);
+            Camera.main.cullingMask = ~(0); 
             //follow current player, but spin player to top
             SpinPlanet("To up");
         }
@@ -156,7 +156,7 @@ public class TurnController : NetworkBehaviour
             //render everything
             Camera.main.cullingMask = ~(0);
             //follow grenade
-            SpinPlanet("To Grenade");
+            SpinPlanet("To up"); //TODO swap back to "To Grenade"
         }
     }
 
@@ -213,21 +213,31 @@ public class TurnController : NetworkBehaviour
         if (param == "To up")
         {
             target = Quaternion.FromToRotation(n, Vector3.up) * original;
-            planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 2);
+            planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 3);
         }
         else if(param == "To Cam")
         {
             Vector3 PlanetToCamera = (Camera.main.transform.position - planet.transform.position).normalized;
             target = Quaternion.FromToRotation(n, PlanetToCamera) * original;
-            planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 2);
+            planet.transform.rotation = Quaternion.Slerp(original, target, Time.deltaTime * 4);
         }
         else if (param == "To Grenade")
         {
+            ////TODO
             //GameObject Grenade = GameObject.FindGameObjectWithTag("Grenade");
-            //Vector3 PlanetToGrenade = (Grenade.transform.position - planet.transform.position).normalized;
-            //target = Quaternion.FromToRotation(n, PlanetToGrenade) * original;
+            ////rotate planet from where grenade is to camera
+            //Vector3 from = (Grenade.transform.position - planet.transform.position).normalized;
+            //Vector3 to = (Camera.main.transform.position - planet.transform.position).normalized;
+            //Quaternion Rotation = Quaternion.FromToRotation(from, to);
+            //target = Rotation * original;
             //planet.transform.rotation = target;
-        }        
+
+            //Grenade.transform.position = Rotation * (Grenade.transform.position - planet.transform.position) + planet.transform.position;
+
+            //Rigidbody GrenadeRB = Grenade.GetComponent<Rigidbody>();
+            //GrenadeRB.rotation = Rotation * GrenadeRB.rotation;
+            //GrenadeRB.velocity = Rotation * GrenadeRB.velocity;
+        }
     }
     #endregion
 
@@ -294,11 +304,11 @@ public class TurnController : NetworkBehaviour
     {
         if(WandHead.GetArrowHead() != WandHead.GetArrowTail())
         {
-            Vector3 PlayerToCamera = Camera.main.transform.position - Players[currentPlayer].transform.position;
-            Vector3 left = Vector3.Cross(PlayerToCamera.normalized, (WandHead.GetArrowHead() - WandHead.GetArrowTail()).normalized);
-            Vector3 forward = Vector3.Cross(left, PlayerToCamera.normalized);
-            Players[currentPlayer].transform.LookAt(Players[currentPlayer].transform.position + forward, PlayerToCamera);
-            AssetManager.Instance.Get("Planet").GetComponent<Planet>().ClampPlayerUpright(Players[currentPlayer]);
+            GameObject planet = AM.Get("Planet");
+            Vector3 up = (Players[currentPlayer].transform.position - planet.transform.position).normalized;
+            Vector3 left = Vector3.Cross(up, (WandHead.GetArrowHead() - WandHead.GetArrowTail()).normalized);
+            Vector3 forward = Vector3.Cross(left, up);
+            Players[currentPlayer].transform.LookAt(Players[currentPlayer].transform.position + forward, up);
         }
     }
 

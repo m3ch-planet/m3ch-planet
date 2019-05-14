@@ -25,21 +25,12 @@ public class PlayerNetworkSetup : NetworkBehaviour
                 componentsToDisable[i].enabled = false;
             }
             GetComponent<PlayerController>()._isLocalPlayer = false;
-            d.LogPersist("Player " + 
-                GetComponent<NetworkIdentity>().netId.ToString() +
-                " " +  
-                GetComponent<PlayerController>().GetPlayerName() + " joined");
         }
         else
         {
             string _playerID = GetComponent<NetworkIdentity>().netId.ToString();
             GetComponent<PlayerController>()._isLocalPlayer = true;
             CmdInitPlayerName(PlayerPrefs.GetString("PlayerName"), _playerID);
-            d.LogPersist("Player " +
-                _playerID +
-                " " +
-                GetComponent<PlayerController>().GetPlayerName() +
-                " created");
         }
     }
 

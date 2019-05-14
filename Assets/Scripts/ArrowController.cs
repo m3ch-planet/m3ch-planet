@@ -59,7 +59,11 @@ public class ArrowController : MonoBehaviour
         if(TC == null)
             TC = GameObject.FindGameObjectWithTag("TurnController").GetComponent<TurnController>();
         if(TC != null)
-            TC.Attack(direction*3); // Shoot grenade in the direction of the arrow
+        {
+            //TC.Attack(Vector3.up*4f);
+            TC.Attack(direction * 3); // Shoot grenade in the direction of the arrow
+        }
+            
 	}
 
 	void Update()
@@ -77,6 +81,10 @@ public class ArrowController : MonoBehaviour
             arrow.SetPositions(new Vector3[] { ArrowTail, ArrowHead });
             arrow.startWidth = 0.05f;
             arrow.endWidth = 0.05f;
+        }
+        else
+        {
+            arrow.enabled = false;
         }
 	}
 
@@ -133,5 +141,10 @@ public class ArrowController : MonoBehaviour
             Destroy(selectedItem);
             selectedItem = null;
         }
+    }
+    
+    public void SetArrow(bool active)
+    {
+        arrow.enabled = active;
     }
 }

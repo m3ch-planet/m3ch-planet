@@ -59,11 +59,11 @@ public class CustomImageTargetBehaviour : MonoBehaviour, ITrackableEventHandler
                     GameObject.FindGameObjectWithTag("WandHead").GetComponent<ArrowController>().SetArrow(false);
                     break;
                 case "stones":
-                    LinkedList<PlayerController> Players = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().GetPlayersList();
-                    foreach(PlayerController p in Players)
-                    {
-                        p.gameObject.GetComponent<Rigidbody>().useGravity = true;
-                    }
+                    //LinkedList<PlayerController> Players = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().GetPlayersList();
+                    //foreach(PlayerController p in Players)
+                    //{
+                    //    p.gameObject.GetComponent<Rigidbody>().useGravity = true;
+                    //}
                     break;
             }
             OnTrackingFound();
@@ -77,11 +77,11 @@ public class CustomImageTargetBehaviour : MonoBehaviour, ITrackableEventHandler
                     GameObject.FindGameObjectWithTag("WandHead").GetComponent<ArrowController>().SetArrow(false);
                     break;
                 case "stones":
-                    LinkedList<PlayerController> Players = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().GetPlayersList();
-                    foreach (PlayerController p in Players)
-                    {
-                        p.gameObject.GetComponent<Rigidbody>().useGravity = false;
-                    }
+                    //LinkedList<PlayerController> Players = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().GetPlayersList();
+                    //foreach (PlayerController p in Players)
+                    //{
+                    //    p.gameObject.GetComponent<Rigidbody>().useGravity = false;
+                    //}
                     break;
             }
             OnTrackingLost();
