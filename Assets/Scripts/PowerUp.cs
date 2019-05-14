@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PowerUp : MonoBehaviour
 {
-    public enum PowerUpType { HEALTH, ENERGY };
+    public enum PowerUpType { HEALTH, ENERGY, DAMAGE, SHIELD, TELEPORT };
     PowerUpType type;
 
     public void SetPowerUpType(PowerUpType type)

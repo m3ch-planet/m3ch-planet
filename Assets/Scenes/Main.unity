@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.43667564, g: 0.48427135, b: 0.5645232, a: 1}
+  m_IndirectSpecularColor: {r: 0.4366756, g: 0.48427135, b: 0.56452316, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7871,8 +7871,11 @@ MonoBehaviour:
     type: 3}
   GroundImageTarget: {fileID: 309096837}
   Grenade: {fileID: 4168795892801131352, guid: d91a7ba543b499043bd2d00b09ded734, type: 3}
-  HealthPack: {fileID: 9105511915912124789, guid: ff1c4e643c29e4f4c868aa91f9a4b305,
-    type: 3}
+  PowerupHealth: {fileID: 146310, guid: f244d85ca954f4336a1a7595053efbfc, type: 3}
+  PowerupEnergy: {fileID: 197236, guid: 4fc855fb7bf094a0891967175e5bdb17, type: 3}
+  PowerupDamage: {fileID: 173500, guid: fb5a9652227c545d98a413cd73b80b69, type: 3}
+  PowerupShield: {fileID: 108390, guid: db1c94431d2a64a068f8c904090cee66, type: 3}
+  PowerupTeleport: {fileID: 179448, guid: 41ddecd19696e4b7abfe4584fa7efe68, type: 3}
 --- !u!114 &1821070817
 MonoBehaviour:
   m_ObjectHideFlags: 0

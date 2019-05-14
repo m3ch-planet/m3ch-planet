@@ -8,7 +8,12 @@ public class AssetManager : MonoBehaviour
     public GameObject PlanetPrefab;
     public GameObject GroundImageTarget;
     public GameObject Grenade;
-    public GameObject HealthPack;
+    public GameObject PowerupHealth;
+    public GameObject PowerupEnergy;
+    public GameObject PowerupDamage;
+    public GameObject PowerupShield;
+    public GameObject PowerupTeleport;
+
 
     public static AssetManager Instance;
 
@@ -27,8 +32,16 @@ public class AssetManager : MonoBehaviour
                 return GroundImageTarget;
             case "Grenade":
                 return Grenade;
-            case "HealthPack":
-                return HealthPack;
+            case "PowerupHealth":
+                return PowerupHealth;
+            case "PowerupEnergy":
+                return PowerupEnergy;
+            case "PowerupDamage":
+                return PowerupDamage;
+            case "PowerupShield":
+                return PowerupShield;
+            case "PowerupTeleport":
+                return PowerupTeleport;
             default:
                 return null;
         }
