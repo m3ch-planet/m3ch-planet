@@ -19,7 +19,7 @@ public class MiniMapController : MonoBehaviour
         if(LocalPlayer == null && GC.GetGameHappening())
         {
             LocalPlayer = GC.GetLocalPlayer();
-        }else if (GC.GetGameHappening())
+        } else if (GC.GetGameHappening())
         {
             transform.position = LocalPlayer.transform.position + LocalPlayer.transform.up * 1.45f;
             transform.LookAt(LocalPlayer.transform,LocalPlayer.transform.forward);
