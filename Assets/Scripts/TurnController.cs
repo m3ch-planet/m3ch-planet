@@ -36,6 +36,9 @@ public class TurnController : NetworkBehaviour
     //Attacking variables
     ArrowController WandHead;
 
+    public GameObject holdAttackText;
+    public GameObject holdWalkText;
+
     public int NUMBER_OF_POWERUPS;
 
     // Start is called before the first frame update
@@ -114,18 +117,25 @@ public class TurnController : NetworkBehaviour
         {
             if (Walking)
             {
+                holdWalkText.SetActive(true);
                 Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 10f;
                 HandleWalk();
             }
             else
             {
+                holdWalkText.SetActive(false);
                 Players[currentPlayer].GetComponent<Rigidbody>().angularDrag = 2;
             }
             //Camera up
-            if (Attacking)
-                AlignPlayerWithArrow(); 
-            else
+            if (Attacking) {
+                holdAttackText.SetActive(true);
+                AlignPlayerWithArrow();
+            }
+            else {
+                holdAttackText.SetActive(false);
                 AlignPlayerWithCamera();
+            }
+
             //if is local player then send position to other clients via server
             Players[currentPlayer].CmdSendPlayerTransform(
                 Players[currentPlayer].transform.localPosition,
