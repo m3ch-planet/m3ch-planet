@@ -18,7 +18,9 @@ public class MatchmakingController : MonoBehaviour
     List<GameObject> roomList;
     public GameObject roomButtonPrefab;
 
+    [SerializeField]
     GameObject inputField;
+    [SerializeField]
     GameObject createMatchBtn;
 
     private void Awake()
@@ -45,11 +47,9 @@ public class MatchmakingController : MonoBehaviour
             networkManager.StartMatchMaker();
 
         // Attach callback function to UI input field
-        inputField = GameObject.Find("RoomNameInput");
         inputField.GetComponent<InputField>().onEndEdit.AddListener(SetRoomName);
 
         // Attach callback function to "Create Match" button
-        createMatchBtn = GameObject.Find("Create Room");
         createMatchBtn.GetComponent<Button>().onClick.AddListener(CreateRoom);
     }
 

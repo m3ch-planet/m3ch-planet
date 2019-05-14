@@ -17,10 +17,20 @@ public class UIController : MonoBehaviour
     GameObject HostMenu;
 
     GameObject MyProfile;
-    GameObject Background;
+    
 
+    [SerializeField]
+    GameObject Background;
+    [SerializeField]
+    GameObject Menus;
+    [SerializeField]
+    GameObject Panels;
     private void Init()
     {
+        Background.SetActive(true);
+        Menus.SetActive(true);
+        Panels.SetActive(true);
+
         // Locate corresponding GameObjects in the scene
         StartMenu = GameObject.Find("StartMenu");
         JoinMenu = GameObject.Find("JoinMenu");
@@ -33,8 +43,7 @@ public class UIController : MonoBehaviour
 
         TurnText = TurnPanel.GetComponentsInChildren<TextMeshProUGUI>()[0];
         TurnTimeText = TurnPanel.GetComponentsInChildren<TextMeshProUGUI>()[1];
-
-        Background = GameObject.Find("Background");
+        
         MyProfile = GameObject.Find("MyProfile");
 
         // Set up event handlers
