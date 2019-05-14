@@ -6,6 +6,32 @@ public class PowerUp : MonoBehaviour
 {
     public enum PowerUpType { HEALTH, ENERGY, DAMAGE, SHIELD, TELEPORT };
     PowerUpType type;
+    TurnController TC;
+
+    private void Start()
+    {
+        TC = GameObject.FindWithTag("TurnController").GetComponent<TurnController>();
+    }
+
+
+    public string GetPowerUpType()
+    {
+        switch (type)
+        {
+            case PowerUpType.ENERGY:
+                return "PowerupEnergy";
+            case PowerUpType.HEALTH:
+                return "PowerupHealth";
+            case PowerUpType.DAMAGE:
+                return "PowerupDamage";
+            case PowerUpType.SHIELD:
+                return "PowerupShield";
+            case PowerUpType.TELEPORT:
+                return "PowerupTeleport";
+            default:
+                return "";
+        }
+    }
 
     public void SetPowerUpType(PowerUpType type)
     {
@@ -21,7 +47,6 @@ public class PowerUp : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             PlayerController player = other.GetComponent<PlayerController>();
-
             switch (type)
             {
                 case PowerUpType.ENERGY:
@@ -31,8 +56,10 @@ public class PowerUp : MonoBehaviour
                     player.CmdChangeHealth(30);
                     break;
                 default:
+                    TC.GetCurrentPlayer().CmdAddToInventory(this);
                     break;
             }
+
             Destroy(gameObject);
         }
     }
