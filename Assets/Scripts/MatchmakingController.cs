@@ -114,7 +114,6 @@ public class MatchmakingController : MonoBehaviour
         if (roomName.Equals(""))
             return;
 
-        Debug.Log("Creating lobby " + roomName + "...");
         networkManager.matchMaker.CreateMatch(roomName, roomSize, true, "", "", "", 0, 0, networkManager.OnMatchCreate);
 
         ui.EnableHostMenu(false);
