@@ -1,13 +1,7 @@
-/*==============================================================================
-Copyright (c) 2017 PTC Inc. All Rights Reserved.
-
-Copyright (c) 2010-2014 Qualcomm Connected Experiences, Inc.
-All Rights Reserved.
-Confidential and Proprietary - Protected under copyright and other laws.
-==============================================================================*/
-
-using UnityEngine;
+﻿using UnityEngine;
 using Vuforia;
+using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// A custom handler that implements the ITrackableEventHandler interface.
@@ -15,7 +9,7 @@ using Vuforia;
 /// Changes made to this file could be overwritten when upgrading the Vuforia version.
 /// When implementing custom event handler behavior, consider inheriting from this class instead.
 /// </summary>
-public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandler
+public class CustomImageTargetBehaviour : MonoBehaviour, ITrackableEventHandler
 {
     #region PROTECTED_MEMBER_VARIABLES
 
@@ -62,8 +56,14 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
             switch (mTrackableBehaviour.TrackableName)
             {
                 case "Autumn":
+                    GameObject.FindGameObjectWithTag("WandHead").GetComponent<ArrowController>().SetArrow(false);
                     break;
                 case "stones":
+                    //LinkedList<PlayerController> Players = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().GetPlayersList();
+                    //foreach(PlayerController p in Players)
+                    //{
+                    //    p.gameObject.GetComponent<Rigidbody>().useGravity = true;
+                    //}
                     break;
             }
             OnTrackingFound();
@@ -71,10 +71,17 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
         else if (previousStatus == TrackableBehaviour.Status.TRACKED &&
                  newStatus == TrackableBehaviour.Status.NO_POSE)
         {
-            switch (mTrackableBehaviour.TrackableName){
+            switch (mTrackableBehaviour.TrackableName)
+            {
                 case "Autumn":
+                    GameObject.FindGameObjectWithTag("WandHead").GetComponent<ArrowController>().SetArrow(false);
                     break;
                 case "stones":
+                    //LinkedList<PlayerController> Players = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().GetPlayersList();
+                    //foreach (PlayerController p in Players)
+                    //{
+                    //    p.gameObject.GetComponent<Rigidbody>().useGravity = false;
+                    //}
                     break;
             }
             OnTrackingLost();
@@ -133,3 +140,4 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
 
     #endregion // PROTECTED_METHODS
 }
+
