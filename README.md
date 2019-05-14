@@ -32,9 +32,11 @@ After clicking “My Profile”, the user will be directed to a screen where the
 
 ### Hosting a Game
 After pressing “Host Game”,  the user will then be directed to the next screen in which they can enter the name of the game. After entering the desired name of their game, they can press the button “Create Game”. 
+
 ![Host Game Screen](README_Assets/createroom.jpg)
 
 Afterwards, the user will be directed to the waiting room. Here, the user needs to point the camera at the battle arena image target to start tracking it. After doing so, a virtual avatar with the player’s specified profile name and the Not Ready status will drop down and land on the image target, as seen below.
+
 ![Waiting Room](README_Assets/waitingroom.jpg)
  
 ### Waiting Room 
